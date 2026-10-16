@@ -9,7 +9,7 @@ export function NotFoundPage() {
       <p className="eyebrow text-brand">404 · Вне маршрута</p>
       <h1 id="not-found-title" className="type-page-title">Страница не найдена</h1>
       <p>Проверьте адрес или вернитесь к карте будущих экранов.</p>
-      <Link to="/" className="text-link">К основе проекта</Link>
+      <Link to="/" className="text-link">В своё пространство</Link>
     </section>
   )
 }

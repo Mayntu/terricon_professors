@@ -10,7 +10,7 @@ export interface PlannedScreen {
 
 const allRoles = ['Employee', 'Manager', 'HRAdmin'] as const
 
-/** Reserved routes; every entry renders the same explicit development placeholder. */
+/** Screen catalogue. Leave flow is implemented; other business areas remain placeholders. */
 export const plannedScreens = [
   { id: 'login', path: '/login', title: 'Вход в JanaМен', roles: [] },
   { id: 'dashboard', path: '/dashboard', title: 'Личный кабинет', roles: allRoles },

@@ -1,6 +1,6 @@
 import type { CourseProgress, CourseSummary } from '@/features/academy/model'
 import type { AssistantAnswer, KnowledgeArticle } from '@/features/assistant/model'
-import type { EmployeeProfile, Session } from '@/features/identity/model'
+import type { EmployeeProfile, Session, User, Role } from '@/features/identity/model'
 import type { LeaveDecision, LeaveRequest, SubmitLeaveInput } from '@/features/leave/model'
 import type { EmployeeNotification } from '@/features/notifications/model'
 
@@ -46,6 +46,28 @@ export interface LeaveService {
 export interface NotificationService {
   listMine(options?: ListOptions): Promise<ServiceResult<Page<EmployeeNotification>>>
   markRead(id: string, options?: RequestOptions): Promise<ServiceResult<EmployeeNotification>>
+}
+
+export interface IAuthService {
+  getCurrentUser(): Promise<ServiceResult<User | null>>
+  signInDemo(role: Role): Promise<ServiceResult<User>>
+  signOut(): Promise<ServiceResult<null>>
+}
+
+export interface IProfileService extends EmployeeService {}
+export interface ILeaveRequestService extends LeaveService {
+  listTeam(options?: ListOptions): Promise<ServiceResult<Page<LeaveRequest>>>
+}
+export interface INotificationService extends NotificationService {}
+
+/** Services are replaceable; invalidation is separate from their transport. */
+export interface ApplicationServices {
+  readonly auth: IAuthService
+  readonly profiles: IProfileService
+  readonly leaveRequests: ILeaveRequestService
+  readonly notifications: INotificationService
+  readonly subscribe: (listener: () => void) => () => void
+  readonly getRevision: () => number
 }
 
 export interface AcademyService {

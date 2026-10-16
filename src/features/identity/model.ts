@@ -1,5 +1,11 @@
 export type Role = 'Employee' | 'Manager' | 'HRAdmin'
 
+export interface User {
+  readonly id: string
+  readonly displayName: string
+  readonly role: Role
+}
+
 /** Future server-confirmed identity, never inferred from localStorage. */
 export interface Session {
   readonly employeeId: string

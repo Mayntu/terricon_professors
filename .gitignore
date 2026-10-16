@@ -17,6 +17,7 @@ dist-ssr
 coverage
 playwright-report
 test-results
+artifacts/
 *.tsbuildinfo
 
 # Editor directories and files

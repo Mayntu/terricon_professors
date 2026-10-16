@@ -15,6 +15,10 @@
   --text-primary: var(--jana-graphite);
   --text-secondary: #59675f;
   --text-inverse: var(--jana-ivory);
+  --text-inverse-muted: #a7b8ad;
+  --border-inverse: #38483f;
+  --diagram-grid: #23342b;
+  --surface-navigation: #eeeFE8;
   --action-primary: var(--jana-green);
   --action-hover: #1c624f;
   --action-soft: var(--jana-mint);
