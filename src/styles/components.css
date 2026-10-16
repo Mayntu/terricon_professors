@@ -1,0 +1,21 @@
+@layer components {
+  .wordmark { display: inline-flex; align-items: center; gap: var(--space-3); font-size: 1.5rem; font-weight: 700; letter-spacing: -0.06em; }
+  .wordmark > svg { color: var(--action-primary); }
+  .button {
+    display: inline-flex; justify-content: center; align-items: center; gap: var(--space-2);
+    min-height: 44px; padding: var(--space-3) var(--space-5);
+    border: 1px solid transparent; border-radius: var(--control-radius);
+    font-weight: 600; line-height: 1.25;
+    transition: background-color var(--motion-fast) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease);
+  }
+  .button--primary { background: var(--action-primary); color: var(--text-inverse); }
+  .button--primary:hover:enabled { background: var(--action-hover); }
+  .button--secondary { border-color: var(--border-control); background: transparent; }
+  .button--secondary:hover:enabled, .button--quiet:hover:enabled { background: var(--surface-subtle); }
+  .button--quiet { background: transparent; color: var(--action-primary); }
+  .button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .text-link { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 44px; color: var(--action-primary); text-decoration: underline; text-underline-offset: 0.25em; font-weight: 600; }
+  .text-link:hover { color: var(--action-hover); }
+  .skip-link { position: fixed; top: var(--space-4); left: var(--space-4); z-index: var(--z-skip-link); padding: var(--space-3) var(--space-4); background: var(--surface-inverse); color: var(--text-inverse); transform: translateY(-200%); }
+  .skip-link:focus { transform: translateY(0); }
+}

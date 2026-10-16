@@ -1,0 +1,25 @@
+@import 'tailwindcss';
+
+@theme inline {
+  --color-*: initial;
+  --color-page: var(--surface-page);
+  --color-surface: var(--surface-raised);
+  --color-subtle: var(--surface-subtle);
+  --color-ink: var(--text-primary);
+  --color-muted: var(--text-secondary);
+  --color-inverse: var(--text-inverse);
+  --color-dark: var(--surface-inverse);
+  --color-brand: var(--action-primary);
+  --color-brand-hover: var(--action-hover);
+  --color-mint: var(--action-soft);
+  --color-accent: var(--accent-warm);
+  --color-line: var(--border-subtle);
+  --color-control: var(--border-control);
+  --color-success: var(--status-success);
+  --color-warning: var(--status-warning);
+  --color-danger: var(--status-danger);
+  --font-sans: var(--font-interface);
+  --font-mono: var(--font-technical);
+  --radius-control: var(--control-radius);
+  --radius-panel: var(--panel-radius);
+}
