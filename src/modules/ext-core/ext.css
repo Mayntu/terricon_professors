@@ -122,3 +122,5 @@ td .ext-badges { display: flex; margin: .35rem 0 0; }
 .ext-filters { display: flex; flex-wrap: wrap; gap: .75rem; max-width: none; margin: 0; }
 .ext-filters label { flex: 1 1 10rem; }
 .ext-list > li > .ext-pill { align-self: center; flex: 0 0 auto; }
+/* QA-06: пользовательский текст без пробелов не растягивает страницу */
+.ext-list li, .ext-list li > div, .ext-bubble, .ext-section, .ext-panel, .ext-md, .ext-sources, .ext-table td { overflow-wrap: anywhere; min-width: 0; }

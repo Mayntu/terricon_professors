@@ -55,3 +55,8 @@ registerDictionary(
     'common.all': 'Барлығы', 'common.days': 'күн', 'common.open': 'Ашу', 'nav.ext.group': 'JanaМен қызметтері',
   },
 )
+
+/** Ключи без казахского перевода (проверка в e2e-ext/23-ui-quality.spec.ts). */
+export function missingKk(): string[] {
+  return Object.keys(dictionaries.ru).filter((k) => !(k in dictionaries.kk))
+}
