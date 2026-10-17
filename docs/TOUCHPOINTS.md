@@ -15,3 +15,4 @@
 | 8 | `src/pages/requests/RequestDetailPage.tsx` | `<ExtSlot name="request.card.badges" requestId=…/>` в строке статуса | Бейдж срока в карточке заявки |
 | 9 | `src/features/leave/components/DecisionPanel.tsx`, `src/features/leave/model.ts` | При отказе — `<RejectReason>` (причина из справочника), кнопка неактивна без причины и комментария от 10 символов; `reasonCode?` в `LeaveDecision` и в вызове `decide` | Гарантии: отказ только с причиной. В режиме моков поле не показывается и не требуется |
 | 10 | `src/layouts/AppShell.tsx` | `<ExtSlot name="shell.overlay" />` после мобильного меню | Плавающая демо-панель (показывается только при `DEMO_MODE`) |
+| 11 | `README.md` | Раздел «Полная сборка с бэкендом» в конце файла; его текст не тронут | Запуск с бэкендом, список ext-экранов, реализовано / смоделировано / развитие |
