@@ -10,6 +10,7 @@ import { aiJanaModule } from './ai-jana'
 import { grievanceModule } from './ext-grievance'
 import { kbGapsModule } from './ext-kb-gaps'
 import { shiftsModule } from './ext-shifts'
+import { demoModule } from './ext-demo'
 import './ext-grievance/i18n'
 import './ext-policies/i18n'
 import './ext-wage/i18n'
@@ -27,6 +28,7 @@ registerModules([
   grievanceModule,
   kbGapsModule,
   shiftsModule,
+  demoModule,
 ])
 
 export { extElement, extNavigation, extPlannedScreens } from './ext-core/registry'

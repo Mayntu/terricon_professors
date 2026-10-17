@@ -10,6 +10,7 @@ import { AppNavigation } from './components/AppNavigation'
 import { UserMenu } from './components/UserMenu'
 import { MobileNavigation } from './components/MobileNavigation'
 import { supportNavigation } from './navigation'
+import { ExtSlot } from '@/modules/ext-core/ExtSlot'
 
 export default function AppShell({ role }: { role: Role }) {
   const { pathname } = useLocation()
@@ -45,6 +46,7 @@ export default function AppShell({ role }: { role: Role }) {
         <footer className="workspace-footer"><span><span className="status-dot" /> Пространство для вашего рабочего дня</span><span className="eyebrow">J / M — {roleInfo.index}</span></footer>
       </div>
       <MobileNavigation role={role} />
+      <ExtSlot name="shell.overlay" />
     </div>
   )
 }

@@ -108,3 +108,14 @@ td .ext-badges { display: flex; margin: .35rem 0 0; }
 .ext-kb-editor { display: grid; gap: 1rem; margin-top: 1rem; grid-template-columns: 1fr 1fr; }
 .ext-kb-editor > p, .ext-kb-editor > .ext-actions { grid-column: 1 / -1; }
 @media (max-width: 900px) { .ext-kb-editor { grid-template-columns: 1fr; } }
+.ext-demo-fab, .ext-demo-panel { position: fixed; right: 1rem; bottom: 5.5rem; z-index: 60; }
+@media (min-width: 1024px) { .ext-demo-fab, .ext-demo-panel { bottom: 1.25rem; } }
+.ext-demo-fab { display: inline-flex; gap: .4rem; align-items: center; padding: .55rem .9rem; border-radius: 999px; background: var(--text-primary, #17201b); color: #fff; font: 600 .75rem/1 var(--font-mono, monospace); letter-spacing: .08em; box-shadow: 0 6px 20px rgb(0 0 0 / .18); }
+.ext-demo-panel { width: min(22rem, calc(100vw - 2rem)); display: grid; gap: .6rem; padding: 1rem; background: var(--surface-raised, #fff); border: 1px solid var(--border-subtle, #dfe5e1); border-radius: 1rem; box-shadow: 0 10px 30px rgb(0 0 0 / .16); }
+.ext-demo-close { padding: .25rem; border-radius: .5rem; }
+.ext-demo-personas { display: grid; grid-template-columns: repeat(2, 1fr); gap: .4rem; }
+.ext-demo-personas button, .ext-demo-actions button { display: grid; text-align: left; padding: .5rem .65rem; border: 1px solid var(--border-subtle, #dfe5e1); border-radius: .6rem; background: var(--surface-page, #f4f3ef); }
+.ext-demo-personas button:hover, .ext-demo-actions button:hover { border-color: var(--jana-green, #1f7a55); }
+.ext-demo-personas small { color: var(--text-secondary, #5b655f); font-size: .72rem; }
+.ext-demo-actions { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; }
+.ext-demo-actions button { text-align: center; font-weight: 600; }

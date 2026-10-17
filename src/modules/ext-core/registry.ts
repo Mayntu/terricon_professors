@@ -11,6 +11,7 @@ export type SlotName =
   | 'profile.sections'      // профиль (ProfilePage)
   | 'request.list.badge'    // строка в «Мои заявки» / очереди (RequestList), props: { requestId }
   | 'request.card.badges'   // карточка заявки (RequestDetailPage), props: { requestId }
+  | 'shell.overlay'         // поверх оболочки (AppShell): демо-панель
 
 export interface ExtScreen {
   /** id экрана: новый или заглушка напарника (academy, ai-jana, hr …) */
