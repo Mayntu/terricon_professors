@@ -107,6 +107,9 @@ test.describe('React → FastAPI → PostgreSQL', () => {
     await page.getByRole('button', { name: 'Сохранить решение' }).click()
     await expect(page.getByTestId('hr-request')).toContainText('Обратитесь к руководителю')
     await passwordLogin(page, 'aigerim')
+    for (const lesson of ['l-saf-2', 'l-saf-3', 'l-saf-4']) {
+      expect((await page.request.post(`${API}/api/academy/lessons/${lesson}/complete`, { headers: await headers(page) })).ok()).toBe(true)
+    }
     const completed = await page.request.post(`${API}/api/academy/courses/course-safety/submit`, { headers: await headers(page), data: { answers: [1, 1, 1, 0] } })
     expect(completed.status()).toBe(200)
     expect((await completed.json()).passed).toBe(true)

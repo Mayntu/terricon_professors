@@ -35,7 +35,7 @@ test('демо §12 целиком', async ({ page }) => {
     await page.getByLabel('Сумма').fill('60000')
     await page.getByRole('button', { name: /^Получить 60 000 ₸/ }).click()
     await page.getByRole('dialog').getByRole('button', { name: 'Подтвердить' }).click()
-    await expect(page.getByTestId('wage-sent')).toContainText('Деньги отправлены')
+    await expect(page.getByTestId('wage-sent')).toContainText('Демо-выплата смоделирована')
   })
 
   await timed('3. Ерлан: отказ без причины невозможен; чужая смена — 403', async () => {

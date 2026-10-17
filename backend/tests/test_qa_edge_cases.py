@@ -94,6 +94,8 @@ async def test_anonymous_author_never_leaks(client, login):
 
 async def test_correct_answers_never_sent(client, login):
     ha, he, hd = await login("aigerim"), await login("erlan"), await login("daniyar")
+    for lesson in ['l-saf-3', 'l-saf-4']:
+        assert (await client.post(f'/api/academy/lessons/{lesson}/complete', headers=ha)).status_code == 200
     responses = [
         await client.get("/api/academy/courses", headers=ha),
         await client.get("/api/academy/my", headers=ha),

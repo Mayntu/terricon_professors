@@ -3,7 +3,7 @@
 from datetime import date, datetime
 from typing import Literal
 
-from pydantic import Field
+from pydantic import Field, StrictInt
 
 from app.core.schemas import ApiModel
 
@@ -60,7 +60,7 @@ class CourseDetail(CourseSummary):
 
 
 class SubmitIn(ApiModel):
-    answers: list[int] = Field(description="Индекс выбранного варианта для каждого вопроса по порядку")
+    answers: list[StrictInt] = Field(description="Индекс выбранного варианта для каждого вопроса по порядку")
 
 
 class SubmitOut(ApiModel):

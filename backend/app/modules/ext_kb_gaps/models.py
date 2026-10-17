@@ -12,6 +12,7 @@ class KbGapGroup(Base):
     __tablename__ = "ext_kb_gap_groups"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    organization_id: Mapped[str] = mapped_column(String(64), default="jana-post", server_default="jana-post", index=True)
     country: Mapped[str] = mapped_column(String(2), index=True)
     label: Mapped[str] = mapped_column(String(300))
     question_count: Mapped[int] = mapped_column(default=0)

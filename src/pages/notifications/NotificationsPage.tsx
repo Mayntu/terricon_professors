@@ -1,3 +1,4 @@
+import { useT } from '@/modules/ext-core/main-i18n'
 import { notificationPath } from '@/features/notifications/navigation'
 import { useState } from 'react'
 import { Link } from 'react-router'
@@ -14,6 +15,7 @@ import { useServiceQuery } from '@/services/useServiceQuery'
 import { formatTimestamp } from '@/features/leave/dates'
 
 export default function NotificationsPage() {
+  const t = useT()
   const services = useServices()
   const query = useServiceQuery(services.notifications.listMine)
   const [unreadOnly, setUnreadOnly] = useState(false)
@@ -29,17 +31,17 @@ export default function NotificationsPage() {
     setBusy(null)
   }
   return <div className="business-page">
-    <WorkspaceHeading index="03 / ВХОДЯЩИЕ" title="Уведомления">Решения по вашим заявкам — всегда под рукой.</WorkspaceHeading>
+    <WorkspaceHeading index={t('03 / ВХОДЯЩИЕ')} title={t('Уведомления')}>{t('Решения по вашим заявкам — всегда под рукой.')}</WorkspaceHeading>
     {items ? <>
-      <div className="notifications-toolbar"><span className="eyebrow">НЕПРОЧИТАННЫХ: <AnimatedValue value={query.data?.items.filter((item) => !item.readAt).length ?? 0} /></span>
-        <SegmentedControl label="Фильтр уведомлений" value={unreadOnly ? 'unread' : 'all'} onChange={(value) => setUnreadOnly(value === 'unread')} options={[{ value: 'all', label: 'Все' }, { value: 'unread', label: 'Непрочитанные' }]} />
+      <div className="notifications-toolbar"><span className="eyebrow">{t('НЕПРОЧИТАННЫХ:')} <AnimatedValue value={query.data?.items.filter((item) => !item.readAt).length ?? 0} /></span>
+        <SegmentedControl label={t('Фильтр уведомлений')} value={unreadOnly ? 'unread' : 'all'} onChange={(value) => setUnreadOnly(value === 'unread')} options={[{ value: 'all', label: t('Все') }, { value: 'unread', label: t('Непрочитанные') }]} />
       </div>
       {error && <p className="field-error" role="alert">{error}</p>}
       {items.length ? <ul className="notifications-list"><AnimatePresence initial={false}>{items.map((item) => <motion.li key={item.id} data-unread={!item.readAt}
         initial={reduce ? false : { opacity: 0.4, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, transition: { duration: reduce ? 0 : motionTokens.duration.fast } }} transition={reduce ? { duration: 0 } : motionTokens.transition}>
-        <span className="notification-marker" aria-hidden="true" /><div><time dateTime={item.createdAt}>{formatTimestamp(item.createdAt)}</time><h2>{item.title}</h2><p>{item.message}</p><Link className="text-link" to={notificationPath(item.target)}>Открыть результат <ArrowUpRight size={16} aria-hidden="true" /></Link></div>
-        {item.readAt ? <span className="notification-read"><Check size={16} aria-hidden="true" />Прочитано</span> : <Button variant="quiet" disabled={busy !== null} onClick={() => markRead(item.id)}>Отметить прочитанным</Button>}
-      </motion.li>)}</AnimatePresence></ul> : <div className="register-empty"><span aria-hidden="true">↗</span><h2>{unreadOnly ? 'Всё прочитано' : 'Вы ничего не пропустили'}</h2><p>После решения руководителя здесь появится уведомление.</p></div>}
+        <span className="notification-marker" aria-hidden="true" /><div><time dateTime={item.createdAt}>{formatTimestamp(item.createdAt)}</time><h2>{item.title}</h2><p>{item.message}</p><Link className="text-link" to={notificationPath(item.target)}>{t('Открыть результат')} <ArrowUpRight size={16} aria-hidden="true" /></Link></div>
+        {item.readAt ? <span className="notification-read"><Check size={16} aria-hidden="true" />{t('Прочитано')}</span> : <Button variant="quiet" disabled={busy !== null} onClick={() => markRead(item.id)}>{t('Отметить прочитанным')}</Button>}
+      </motion.li>)}</AnimatePresence></ul> : <div className="register-empty"><span aria-hidden="true">↗</span><h2>{unreadOnly ? t('Всё прочитано') : t('Вы ничего не пропустили')}</h2><p>{t('После решения руководителя здесь появится уведомление.')}</p></div>}
     </> : <QueryState problem={query.problem} retry={query.refresh} />}
   </div>
 }

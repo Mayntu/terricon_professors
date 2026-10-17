@@ -4,8 +4,8 @@ import { useRequestExt } from '../ext-core/requestExt'
 import { Pill } from '../ext-core/ui'
 
 registerDictionary(
-  { 'doc.leave_order': 'Приказ об отпуске № {number} оформлен в Documentolog', 'doc.wage_advance': 'Заявление на аванс № {number} оформлено в Documentolog', 'doc.other': 'Документ № {number} оформлен в Documentolog' },
-  { 'doc.leave_order': 'Демалыс туралы № {number} бұйрық Documentolog-та рәсімделді', 'doc.wage_advance': 'Аванс туралы № {number} өтініш Documentolog-та рәсімделді', 'doc.other': '№ {number} құжат Documentolog-та рәсімделді' },
+  { 'doc.leave_order': 'Приказ об отпуске № {number} смоделирован в Documentolog (mock)', 'doc.wage_advance': 'Заявление на аванс № {number} смоделировано в Documentolog (mock)', 'doc.other': 'Документ № {number} смоделирован в Documentolog (mock)' },
+  { 'doc.leave_order': 'Демалыс туралы № {number} бұйрық Documentolog-та модельденді (mock)', 'doc.wage_advance': 'Аванс туралы № {number} өтініш Documentolog-та модельденді (mock)', 'doc.other': '№ {number} құжат Documentolog-та модельденді (mock)' },
 )
 
 /** Карточка заявки: документ, сформированный в mock Documentolog после одобрения (CLAUDE.md §5.2). */

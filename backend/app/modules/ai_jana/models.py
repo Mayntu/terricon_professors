@@ -12,6 +12,7 @@ class KbDoc(Base):
     __tablename__ = "kb_docs"
 
     id: Mapped[str] = mapped_column(String(64), primary_key=True)  # kb-kz-vacation
+    organization_id: Mapped[str] = mapped_column(String(64), default="jana-post", server_default="jana-post", index=True)
     country: Mapped[str] = mapped_column(ForeignKey("countries.code"), index=True)
     title: Mapped[str] = mapped_column(String(300))
     source_label: Mapped[str] = mapped_column(String(300))
@@ -26,6 +27,7 @@ class KbQuestion(Base):
     __tablename__ = "kb_questions"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    organization_id: Mapped[str] = mapped_column(String(64), default="jana-post", server_default="jana-post", index=True)
     country: Mapped[str] = mapped_column(String(2), index=True)
     question: Mapped[str] = mapped_column(Text)
     answered: Mapped[bool]

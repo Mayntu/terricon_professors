@@ -35,7 +35,7 @@ export default function AcademyPage() {
       </ExtState></section>
     <section className="ext-section" aria-labelledby="ac-cat"><span className="eyebrow">02</span><h2 id="ac-cat">{t('ac.catalog')}</h2>
       <ExtState loading={catalog.loading} problem={catalog.problem} retry={catalog.refresh}>
-        <ul className="ext-list">{catalog.data?.items.filter((c) => !mine.has(c.id)).map((c) => <li key={c.id}><div><strong>{c.title}</strong><span className="ext-muted">{c.description} · {t('ac.min', { n: c.durationMinutes })}</span><GradeTag courseId={c.id} /></div>
+        <ul className="ext-list">{catalog.data?.items.map((c) => <li key={c.id}><div><strong>{c.title}</strong>{mine.has(c.id) && <span className="ext-muted">{t('ac.assigned')}</span>}<span className="ext-muted">{c.description} · {t('ac.min', { n: c.durationMinutes })}</span><GradeTag courseId={c.id} /></div>
           <Link className="text-link" to={`/academy/${c.id}`}>{t('ac.open')} <ArrowUpRight size={16} aria-hidden="true" /></Link></li>)}</ul>
       </ExtState></section>
   </div>

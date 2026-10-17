@@ -124,3 +124,15 @@ td .ext-badges { display: flex; margin: .35rem 0 0; }
 .ext-list > li > .ext-pill { align-self: center; flex: 0 0 auto; }
 /* QA-06: пользовательский текст без пробелов не растягивает страницу */
 .ext-list li, .ext-list li > div, .ext-bubble, .ext-section, .ext-panel, .ext-md, .ext-sources, .ext-table td { overflow-wrap: anywhere; min-width: 0; }
+
+.knowledge-section { scroll-margin-top: 6rem; padding-block: .75rem; }
+.knowledge-section:target { border-left: 3px solid var(--action-primary); padding-left: 1rem; }
+.user-popover-heading .ext-lang { margin-bottom: 1rem; }
+.login-header { flex-wrap: wrap; gap: .75rem; }
+:lang(kk) .login-title { font-size: clamp(36px, 5vw, 68px); }
+:lang(kk) .title-last-line { padding-left: 0; }
+@media (max-width: 767px) {
+  .login-header .login-edition { display: none; }
+  :lang(kk) .login-title { font-size: clamp(32px, 8.8vw, 50px); }
+  .ext-ask .ext-actions { padding-right: 4rem; }
+}

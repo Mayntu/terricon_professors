@@ -1,3 +1,4 @@
+import { useT } from '@/modules/ext-core/main-i18n'
 import { useEffect, useRef } from 'react'
 import { apiEnabled } from '@/services/http/client'
 import { useSettings } from '@/modules/ext-core/settings'
@@ -15,6 +16,7 @@ import { supportNavigation } from './navigation'
 import { ExtSlot } from '@/modules/ext-core/ExtSlot'
 
 export default function AppShell({ role }: { role: Role }) {
+  const t = useT()
   const settings = useSettings()
   const demo = !apiEnabled || settings.demoMode
   const { pathname } = useLocation()
@@ -33,21 +35,21 @@ export default function AppShell({ role }: { role: Role }) {
 
   return (
     <div className="app-shell">
-      <a href="#workspace-content" className="skip-link">Перейти к содержимому</a>
-      <aside className="app-sidebar" aria-label="Панель рабочего пространства">
+      <a href="#workspace-content" className="skip-link">{t('Перейти к содержимому')}</a>
+      <aside className="app-sidebar" aria-label={t('Панель рабочего пространства')}>
         <Link to={roleInfo.home} className="sidebar-brand" aria-label="JanaМен — начало"><Wordmark /></Link>
-        <div className="sidebar-role"><span className="sidebar-role-index">{roleInfo.index}</span><div><span className="eyebrow">Ваше пространство</span><strong>{roleInfo.label}</strong></div></div>
+        <div className="sidebar-role"><span className="sidebar-role-index">{roleInfo.index}</span><div><span className="eyebrow">{t('Ваше пространство')}</span><strong>{t(roleInfo.label)}</strong></div></div>
         <AppNavigation role={role} />
-        <div className="sidebar-bottom"><Link className="sidebar-support" to={supportNavigation.path}><SupportIcon size={20} strokeWidth={1.5} aria-hidden="true" /><span>{supportNavigation.label}<small>Спросите AI Jana</small></span><ArrowUpRight size={16} aria-hidden="true" /></Link><span className="sidebar-signature eyebrow">JANA FLOW <span>© 2026</span></span></div>
+        <div className="sidebar-bottom"><Link className="sidebar-support" to={supportNavigation.path}><SupportIcon size={20} strokeWidth={1.5} aria-hidden="true" /><span>{t(supportNavigation.label)}<small>{t('Спросите AI Jana')}</small></span><ArrowUpRight size={16} aria-hidden="true" /></Link><span className="sidebar-signature eyebrow">JANA FLOW <span>© 2026</span></span></div>
       </aside>
       <div className="app-workspace">
         <header className="workspace-header">
           <Link to={roleInfo.home} className="mobile-brand" aria-label="JanaМен — начало"><Wordmark /></Link>
-          <div className="workspace-breadcrumb"><span className="workspace-location-dot" /><span>JanaМен</span><span className="breadcrumb-divider">/</span><strong>{roleInfo.description}</strong></div>
+          <div className="workspace-breadcrumb"><span className="workspace-location-dot" /><span>JanaМен</span><span className="breadcrumb-divider">/</span><strong>{t(roleInfo.description)}</strong></div>
           <div className="workspace-tools">{demo && <span className="workspace-demo-tag">ДЕМО</span>}<NotificationLink /><span className="toolbar-divider" /><UserMenu role={role} /></div>
         </header>
         <main className="workspace-main" id="workspace-content" tabIndex={-1} ref={main}><PageTransition /></main>
-        <footer className="workspace-footer"><span><span className="status-dot" /> Пространство для вашего рабочего дня</span><span className="eyebrow">J / M — {roleInfo.index}</span></footer>
+        <footer className="workspace-footer"><span><span className="status-dot" /> {t('Пространство для вашего рабочего дня')}</span><span className="eyebrow">J / M — {roleInfo.index}</span></footer>
       </div>
       <MobileNavigation role={role} />
       <ExtSlot name="shell.overlay" />

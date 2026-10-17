@@ -48,7 +48,7 @@ export function createHttpServices(session: DemoSessionStore): ApplicationServic
       },
       signIn: (login, password) => signIn({ login, password }, '/auth/login'),
       signInDemo: (role) => signIn({ role }),
-      async signOut() { if (tokenStore.read()) await api.post('/auth/logout'); tokenStore.write(null); session.writeRole(null); revisionStore.bump(); return { ok: true, data: null } },
+      async signOut() { if (tokenStore.read()) await api.post('/auth/logout'); tokenStore.write(null); session.writeRole(null); return { ok: true, data: null } },
     },
     profiles: {
       // Кейс: остаток отпуска — с учётом заявок на рассмотрении. Бэкенд отдаёт и остаток 1С (days),

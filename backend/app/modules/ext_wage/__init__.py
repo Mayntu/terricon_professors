@@ -12,13 +12,13 @@ from app.modules.ext_wage.service import TYPE, summary
 
 RU = {
     "request.type.wage_access": "Зарплата по факту",
-    "notif.wage.paid.title": "Деньги отправлены",
-    "notif.wage.paid.body": "{amount} отправлены на вашу карту",
+    "notif.wage.paid.title": "Демо-выплата смоделирована",
+    "notif.wage.paid.body": "{amount}: тестовая запись банка (mock), без перевода денег",
 }
 KK = {
     "request.type.wage_access": "Нақты жалақы",
-    "notif.wage.paid.title": "Ақша жіберілді",
-    "notif.wage.paid.body": "{amount} картаңызға жіберілді",
+    "notif.wage.paid.title": "Демо төлем модельденді",
+    "notif.wage.paid.body": "{amount}: банктің тест жазбасы (mock), нақты аударым жоқ",
 }
 
 

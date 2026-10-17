@@ -68,6 +68,8 @@ test('keyboard login, menu Escape and notification route', async ({ page }) => {
   await page.keyboard.press('Tab')
   await expect(page.getByRole('link', { name: 'Перейти ко входу' })).toBeFocused()
   await page.keyboard.press('Tab')
+  await expect(page.getByRole('radio', { name: 'RU', exact: true })).toBeFocused()
+  await page.keyboard.press('Tab')
   await expect(page.getByRole('radio', { name: /^Сотрудник/ })).toBeFocused()
   await page.keyboard.press('ArrowRight')
   await expect(page.getByRole('radio', { name: /^Руководитель/ })).toBeChecked()

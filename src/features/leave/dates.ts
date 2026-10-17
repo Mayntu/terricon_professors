@@ -1,3 +1,9 @@
+import { getLang, registerDictionary, translate as t } from '@/modules/ext-core/i18n'
+
+registerDictionary(
+  { 'Не выбрано': 'Не выбрано', 'Выберите корректную дату начала.': 'Выберите корректную дату начала.', 'В демо дата начала не может быть в прошлом.': 'В демо дата начала не может быть в прошлом.', 'Выберите корректную дату окончания.': 'Выберите корректную дату окончания.', 'Дата окончания не может быть раньше начала.': 'Дата окончания не может быть раньше начала.', 'Период превышает тестовый остаток: {n} дн.': 'Период превышает тестовый остаток: {n} дн.' },
+  { 'Не выбрано': 'Таңдалмады', 'Выберите корректную дату начала.': 'Дұрыс басталу күнін таңдаңыз.', 'В демо дата начала не может быть в прошлом.': 'Демо режимінде басталу күні өткен күн болмауы керек.', 'Выберите корректную дату окончания.': 'Дұрыс аяқталу күнін таңдаңыз.', 'Дата окончания не может быть раньше начала.': 'Аяқталу күні басталу күнінен бұрын болмауы керек.', 'Период превышает тестовый остаток: {n} дн.': 'Кезең тестілік қалдықтан асып тұр: {n} күн.' },
+)
 const dayMilliseconds = 86_400_000
 
 export function parseCalendarDate(value: string): number | null {
@@ -20,20 +26,20 @@ export function todayDate(now = new Date()) {
 
 export function formatDate(value: string) {
   const parsed = parseCalendarDate(value)
-  return parsed === null ? 'Не выбрано' : new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(parsed)
+  return parsed === null ? t('Не выбрано') : new Intl.DateTimeFormat(getLang() === 'kk' ? 'kk-KZ' : 'ru-RU', { day: 'numeric', month: getLang() === 'kk' ? '2-digit' : 'short', year: 'numeric', timeZone: 'UTC' }).format(parsed)
 }
 
 export function formatTimestamp(value: string) {
-  return new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Qyzylorda' }).format(new Date(value))
+  return new Intl.DateTimeFormat(getLang() === 'kk' ? 'kk-KZ' : 'ru-RU', { day: 'numeric', month: getLang() === 'kk' ? '2-digit' : 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Qyzylorda' }).format(new Date(value))
 }
 
 export function validateLeavePeriod(start: string, end: string, availableDays: number, today = todayDate()) {
   const errors: Record<string, readonly string[]> = {}
-  if (parseCalendarDate(start) === null) errors.startDate = ['Выберите корректную дату начала.']
-  else if (start < today) errors.startDate = ['В демо дата начала не может быть в прошлом.']
-  if (parseCalendarDate(end) === null) errors.endDate = ['Выберите корректную дату окончания.']
-  else if (parseCalendarDate(start) !== null && end < start) errors.endDate = ['Дата окончания не может быть раньше начала.']
+  if (parseCalendarDate(start) === null) errors.startDate = [t('Выберите корректную дату начала.')]
+  else if (start < today) errors.startDate = [t('В демо дата начала не может быть в прошлом.')]
+  if (parseCalendarDate(end) === null) errors.endDate = [t('Выберите корректную дату окончания.')]
+  else if (parseCalendarDate(start) !== null && end < start) errors.endDate = [t('Дата окончания не может быть раньше начала.')]
   const days = calendarDays(start, end)
-  if (days !== null && days > availableDays) errors.endDate = [`Период превышает тестовый остаток: ${availableDays} дн.`]
+  if (days !== null && days > availableDays) errors.endDate = [t('Период превышает тестовый остаток: {n} дн.', { n: availableDays })]
   return errors
 }

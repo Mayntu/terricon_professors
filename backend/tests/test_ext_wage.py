@@ -43,7 +43,7 @@ async def test_withdraw_creates_request_document_payout_notification(client, log
     mine = (await client.get("/api/requests/my?type=wage_access", headers=h)).json()["items"]
     assert [m["id"] for m in mine] == [out["requestId"]]
     note = next(n for n in (await client.get("/api/notifications", headers=h)).json()["items"] if n["kind"] == "wage.paid")
-    assert note["title"] == "Деньги отправлены" and "30 000 ₸" in note["message"]
+    assert note["title"] == "Демо-выплата смоделирована" and "30 000 ₸" in note["message"]
     # Руководитель в выводе не участвует и его не видит во входящих
     inbox = (await client.get("/api/requests/inbox?status=all", headers=await login("erlan"))).json()["items"]
     assert out["requestId"] not in {i["id"] for i in inbox}

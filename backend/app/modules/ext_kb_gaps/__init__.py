@@ -75,15 +75,15 @@ def doc_out(d: ai.KbDoc) -> DocOut:
 @router.get("/gaps", response_model=list[GapOut], response_model_by_alias=True)
 async def gaps(country: str | None = None, user: Employee = HR_ONLY, session: AsyncSession = DbSession):
     """«23 вопроса: оплата ночных смен (KZ)» — сначала самые частые."""
-    q = select(KbGapGroup).order_by(KbGapGroup.question_count.desc(), KbGapGroup.last_asked_at.desc())
+    q = select(KbGapGroup).where(KbGapGroup.organization_id == user.organization_id).order_by(KbGapGroup.question_count.desc(), KbGapGroup.last_asked_at.desc())
     if country:
         q = q.where(KbGapGroup.country == country)
     return [await gap_out(session, g) for g in await session.scalars(q)]
 
 
-async def _group(session: AsyncSession, gap_id: str) -> KbGapGroup:
-    g = await session.get(KbGapGroup, gap_id)
-    if g is None:
+async def _group(session: AsyncSession, gap_id: str, user: Employee) -> KbGapGroup:
+    g = (await session.scalars(select(KbGapGroup).where(KbGapGroup.id == gap_id).with_for_update().execution_options(populate_existing=True))).first()
+    if g is None or g.organization_id != user.organization_id:
         raise not_found("Группа вопросов не найдена")
     return g
 
@@ -91,32 +91,32 @@ async def _group(session: AsyncSession, gap_id: str) -> KbGapGroup:
 @router.post("/gaps/{gap_id}/draft", response_model=DocOut, response_model_by_alias=True)
 async def draft(gap_id: str, user: Employee = HR_ONLY, session: AsyncSession = DbSession):
     """Подготовить черновик правила. С LLM — по вопросам сотрудников; без LLM — пустой шаблон."""
-    g = await _group(session, gap_id)
+    g = await _group(session, gap_id, user)
     if g.draft_doc_id:
-        return doc_out(await ai.get_doc(session, g.draft_doc_id))
+        return doc_out(await ai.get_doc(session, g.draft_doc_id, user.organization_id))
     samples = (await gap_out(session, g)).samples
     body = await llm.complete(DRAFT_PROMPT, [{"role": "user", "content": "Вопросы сотрудников:\n- " + "\n- ".join(samples)}])
     if not body:
         body = f"## {g.label}\n[Опишите правило: кого касается, сколько, в какие сроки.]\n\n## Как оформить\n[Куда обращаться и какие документы нужны.]"
-    doc = await ai.create_draft(session, g.country, g.label.rstrip("?"), RULE_SOURCE, body)
+    doc = await ai.create_draft(session, g.country, g.label.rstrip("?"), RULE_SOURCE, body, user.organization_id)
     g.status, g.draft_doc_id = "drafted", doc.id
     return doc_out(doc)
 
 
 @router.get("/docs/{doc_id}", response_model=DocOut, response_model_by_alias=True)
 async def get_doc(doc_id: str, user: Employee = HR_ONLY, session: AsyncSession = DbSession):
-    return doc_out(await ai.get_doc(session, doc_id))
+    return doc_out(await ai.get_doc(session, doc_id, user.organization_id))
 
 
 @router.put("/docs/{doc_id}", response_model=DocOut, response_model_by_alias=True)
 async def update_doc(doc_id: str, body: DocUpdate, user: Employee = HR_ONLY, session: AsyncSession = DbSession):
-    return doc_out(await ai.update_draft(session, doc_id, body.title, body.source_label, body.body_md))
+    return doc_out(await ai.update_draft(session, doc_id, body.title, body.source_label, body.body_md, user.organization_id))
 
 
 @router.post("/docs/{doc_id}/publish", response_model=DocOut, response_model_by_alias=True)
 async def publish(doc_id: str, user: Employee = HR_ONLY, session: AsyncSession = DbSession):
     """Публикация человеком: документ попадает в базу страны, AI начинает по нему отвечать."""
-    doc = await ai.publish(session, doc_id)
+    doc = await ai.publish(session, doc_id, user.organization_id)
     for g in await session.scalars(select(KbGapGroup).where(KbGapGroup.draft_doc_id == doc_id)):
         g.status = "published"
     return doc_out(doc)

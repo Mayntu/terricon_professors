@@ -18,6 +18,7 @@ class KnowledgeSource(ApiModel):
     article_id: str
     title: str
     section: str
+    section_id: str = "section-1"
     updated_at: datetime
     source_label: str
 
@@ -36,6 +37,12 @@ class AskOut(ApiModel):
     reason: str | None = None
 
 
+class KnowledgeSection(ApiModel):
+    id: str
+    title: str
+    body: str
+
+
 class KnowledgeArticle(ApiModel):
     id: str
     title: str
@@ -43,3 +50,4 @@ class KnowledgeArticle(ApiModel):
     updated_at: datetime
     country: str
     source_label: str
+    sections: list[KnowledgeSection] = Field(default_factory=list)

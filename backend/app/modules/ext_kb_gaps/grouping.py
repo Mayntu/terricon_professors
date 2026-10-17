@@ -40,10 +40,10 @@ async def assign(session: AsyncSession, question: ai.KbQuestion) -> KbGapGroup:
     весят больше всего — это и есть тема пробела. Близость — максимум из косинуса к центру группы
     и к ближайшему вопросу в ней."""
     groups = list(
-        await session.scalars(select(KbGapGroup).where(KbGapGroup.country == question.country, KbGapGroup.status != "published"))
+        await session.scalars(select(KbGapGroup).where(KbGapGroup.country == question.country, KbGapGroup.organization_id == question.organization_id, KbGapGroup.status != "published"))
     )
     members = {g.id: await ai.group_questions(session, g.id) for g in groups}
-    corpus = await ai.kb_corpus(session, question.country)
+    corpus = await ai.kb_corpus(session, question.country, question.organization_id)
     # Вопросы группы в фон не входят: иначе частое слово темы («ночн») теряет вес
     docs = corpus + [ai.terms(question.question)]
     n = len(docs)
@@ -71,7 +71,7 @@ async def assign(session: AsyncSession, question: ai.KbQuestion) -> KbGapGroup:
 
     if best is None or best_score < THRESHOLD:
         best = KbGapGroup(
-            id=new_id(), country=question.country, label=short_label(question.question), question_count=0,
+            id=new_id(), country=question.country, organization_id=question.organization_id, label=short_label(question.question), question_count=0,
             created_at=question.asked_at, last_asked_at=question.asked_at,
         )
         session.add(best)

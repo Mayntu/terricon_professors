@@ -13,12 +13,14 @@ export function money(amount: number, currency = 'KZT'): string {
 /** «18 окт» / «18 окт 2026» — календарь Алматы. Принимает ISO-дату или время. */
 export function shortDate(value: string, withYear = false): string {
   const d = value.length === 10 ? new Date(`${value}T12:00:00+05:00`) : new Date(value)
-  return new Intl.DateTimeFormat(locale(), { day: 'numeric', month: 'short', ...(withYear ? { year: 'numeric' } : {}), timeZone: TZ }).format(d).replace('.', '')
+  const formatted = new Intl.DateTimeFormat(locale(), { day: 'numeric', month: getLang() === 'kk' ? '2-digit' : 'short', ...(withYear ? { year: 'numeric' } : {}), timeZone: TZ }).format(d)
+  return getLang() === 'kk' ? formatted : formatted.replace('.', '')
 }
 
 /** «18 окт, 14:30» по Алматы. */
 export function dateTime(value: string): string {
-  return new Intl.DateTimeFormat(locale(), { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: TZ }).format(new Date(value)).replace('.', '')
+  const formatted = new Intl.DateTimeFormat(locale(), { day: 'numeric', month: getLang() === 'kk' ? '2-digit' : 'short', hour: '2-digit', minute: '2-digit', timeZone: TZ }).format(new Date(value))
+  return getLang() === 'kk' ? formatted : formatted.replace('.', '')
 }
 
 /** Сегодня по Алматы, YYYY-MM-DD. */

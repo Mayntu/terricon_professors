@@ -1,3 +1,4 @@
+import { useT } from '@/modules/ext-core/main-i18n'
 import { useEffect, useState, type FormEvent } from 'react'
 import { useDemoSession } from '../demo-context'
 import { api } from '@/services/http/client'
@@ -5,6 +6,7 @@ import { DemoLoginForm } from './DemoLoginForm'
 import { Button } from '@/components/ui/Button'
 
 export function LoginForm() {
+  const t = useT()
   const { enterPassword } = useDemoSession()
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
@@ -26,12 +28,12 @@ export function LoginForm() {
     if (!r.ok) setError(r.problem.message)
   }
   return <div>
-    {demo && demoAllowed ? <DemoLoginForm /> : <form className="demo-login-form ext-form" aria-label="Вход по паролю" onSubmit={submit}>
-      <label className="comment-field js-form-reveal"><span>Логин</span><input name="username" autoComplete="username" required value={login} onChange={e => setLogin(e.target.value)} /></label>
-      <label className="comment-field js-form-reveal"><span>Пароль</span><input name="password" type="password" autoComplete="current-password" required value={password} onChange={e => setPassword(e.target.value)} /></label>
+    {demo && demoAllowed ? <DemoLoginForm /> : <form className="demo-login-form ext-form" aria-label={t('Вход по паролю')} onSubmit={submit}>
+      <label className="comment-field js-form-reveal"><span>{t('Логин')}</span><input name="username" autoComplete="username" required value={login} onChange={e => setLogin(e.target.value)} /></label>
+      <label className="comment-field js-form-reveal"><span>{t('Пароль')}</span><input name="password" type="password" autoComplete="current-password" required value={password} onChange={e => setPassword(e.target.value)} /></label>
       {error && <p className="field-error" role="alert">{error}</p>}
-      <button className="login-cta js-form-reveal" type="submit" disabled={busy} aria-busy={busy}><span className="cta-sweep" aria-hidden="true" /><span>{busy ? 'Входим…' : 'Войти'}</span></button>
+      <button className="login-cta js-form-reveal" type="submit" disabled={busy} aria-busy={busy}><span className="cta-sweep" aria-hidden="true" /><span>{busy ? t('Входим…') : t('Войти')}</span></button>
     </form>}
-    {demoAllowed && <Button variant="quiet" onClick={() => { setDemo(!demo); setPassword(''); setError(null) }}>{demo ? 'Вход по паролю' : 'Демонстрационный вход'}</Button>}
+    {demoAllowed && <Button variant="quiet" onClick={() => { setDemo(!demo); setPassword(''); setError(null) }}>{demo ? t('Вход по паролю') : t('Демонстрационный вход')}</Button>}
   </div>
 }

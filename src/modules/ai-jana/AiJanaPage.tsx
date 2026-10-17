@@ -9,9 +9,9 @@ import { useSettings } from '../ext-core/settings'
 import { LangSwitch, Pill } from '../ext-core/ui'
 import './i18n'
 
-interface Source { articleId: string; title: string; section: string; sourceLabel: string }
+interface Source { articleId: string; title: string; section: string; sectionId: string; sourceLabel: string }
 interface Answer { kind: 'grounded' | 'no-answer'; text: string | null; message: string | null; sources: Source[]; escalateAvailable: boolean; reason: string | null }
-interface Turn { id: number; question: string; answer?: Answer; error?: string; askedHr?: string }
+interface Turn { id: number; question: string; hrKey: string; answer?: Answer; error?: string; askedHr?: string; hrId?: string; hrBusy?: boolean; hrError?: string }
 
 /** Чат AI Jana (CLAUDE.md §7.7): ответ с источниками, честный отказ, «Спросить HR» при escalate_available. */
 export default function AiJanaPage() {
@@ -23,24 +23,31 @@ export default function AiJanaPage() {
   const [busy, setBusy] = useState(false)
   const end = useRef<HTMLDivElement>(null)
   const seq = useRef(0)
+  const sending = useRef(false)
+  const hrSending = useRef(new Set<number>())
   useEffect(() => { document.title = `${t('ai.title')} · JanaМен` }, [t])
   useEffect(() => { end.current?.scrollIntoView({ block: 'nearest' }) }, [turns])
 
   async function ask(text: string) {
     const q = text.trim()
-    if (!q || busy) return
+    if (!q || sending.current) return
+    sending.current = true
     seq.current += 1
     const id = seq.current
-    setTurns((all) => [...all, { id, question: q }])
+    setTurns((all) => [...all, { id, question: q, hrKey: crypto.randomUUID() }])
     setQuestion('')
     setBusy(true)
     const r = await api.post<Answer>('/ai/ask', { question: q, lang })
-    setBusy(false)
+    sending.current = false; setBusy(false)
     setTurns((all) => all.map((x) => (x.id === id ? (r.ok ? { ...x, answer: r.data } : { ...x, error: r.problem.message }) : x)))
   }
   async function askHr(turn: Turn) {
-    const r = await api.post<{ number: string }>('/hr-questions', { question: turn.question, aiContext: turn.answer?.message ?? undefined })
-    if (r.ok) setTurns((all) => all.map((x) => (x.id === turn.id ? { ...x, askedHr: r.data.number } : x)))
+    if (turn.askedHr || hrSending.current.has(turn.id)) return
+    hrSending.current.add(turn.id)
+    setTurns(all => all.map(x => x.id === turn.id ? { ...x, hrBusy: true, hrError: '' } : x))
+    const r = await api.post<{ id: string; number: string }>('/hr-questions', { question: turn.question, submissionKey: turn.hrKey, aiContext: turn.answer?.message ?? undefined })
+    hrSending.current.delete(turn.id)
+    setTurns(all => all.map(x => x.id === turn.id ? { ...x, hrBusy: false, ...(r.ok ? { askedHr: r.data.number, hrId: r.data.id } : { hrError: r.problem.message }) } : x))
   }
   function submit(e: FormEvent) { e.preventDefault(); void ask(question) }
 
@@ -52,13 +59,13 @@ export default function AiJanaPage() {
     <div className="ext-chat ext-section" aria-live="polite" data-testid="ai-chat">
       {turns.map((turn) => <div key={turn.id} className="ext-chat">
         <div className="ext-bubble ext-bubble--me"><span className="eyebrow">{t('ai.you')}</span><p>{turn.question}</p></div>
-        {turn.error ? <div className="service-error" role="alert"><p>{turn.error}</p></div>
+        {turn.error ? <div className="service-error" role="alert"><p>{turn.error}</p><Button variant="secondary" disabled={busy} onClick={() => void ask(turn.question)}>{t('common.retry')}</Button></div>
           : turn.answer ? <div className="ext-bubble" data-kind={turn.answer.kind} data-testid="ai-answer"><span className="eyebrow">{t('ai.jana')}</span>
             {turn.answer.reason === 'other_person' && <p style={{ marginBottom: '.5rem' }}><Pill tone="info">{t('ai.refusedOther')}</Pill></p>}
             <p>{turn.answer.kind === 'grounded' ? turn.answer.text : turn.answer.message}</p>
-            {turn.answer.sources.length > 0 && <div className="ext-sources"><span className="eyebrow">{t('ai.sources')}</span>{turn.answer.sources.map((s) => <Link key={s.articleId + s.section} className="text-link" to={`/knowledge/${s.articleId}`}>{s.title} — {s.section} · <span className="ext-muted">{s.sourceLabel}</span> <ArrowUpRight size={14} aria-hidden="true" /></Link>)}</div>}
-            {turn.answer.escalateAvailable && (turn.askedHr ? <p className="ext-muted" role="status" style={{ marginTop: '.75rem' }}>{t('ai.askedHr', { number: turn.askedHr })}</p>
-              : <div className="ext-actions"><Button variant="secondary" onClick={() => void askHr(turn)}>{t('ai.askHr')}</Button></div>)}
+            {turn.answer.sources.length > 0 && <div className="ext-sources"><span className="eyebrow">{t('ai.sources')}</span><p className="ext-muted">{t('ai.original')}</p>{turn.answer.sources.map((s) => <Link key={s.articleId + s.sectionId} className="text-link" to={`/knowledge/${encodeURIComponent(s.articleId)}#${s.sectionId}`}>{s.title} — {s.section} · <span className="ext-muted">{s.sourceLabel}</span> <ArrowUpRight size={14} aria-hidden="true" /></Link>)}</div>}
+            {turn.answer.escalateAvailable && (turn.askedHr ? <div className="ext-actions"><p className="ext-muted" role="status">{t('ai.askedHr', { number: turn.askedHr })}</p><Link className="text-link" to={`/requests/${turn.hrId}`}>{t('ai.openHr')}</Link></div>
+              : <div className="ext-actions"><Button variant="secondary" disabled={turn.hrBusy} aria-busy={!!turn.hrBusy} onClick={() => void askHr(turn)}>{turn.hrBusy ? t('common.sending') : t('ai.askHr')}</Button>{turn.hrError && <p className="field-error" role="alert">{turn.hrError}</p>}</div>)}
           </div>
           : <p className="query-loading" role="status">{t('ai.thinking')}</p>}
       </div>)}

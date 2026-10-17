@@ -21,7 +21,7 @@ def _get_client() -> anthropic.AsyncAnthropic:
     global _client
     if _client is None:
         # Короткий таймаут: пользователь ждёт ответа в чате; при сбое — экстрактивный режим
-        _client = anthropic.AsyncAnthropic(api_key=get_settings().anthropic_api_key, timeout=25.0, max_retries=1)
+        _client = anthropic.AsyncAnthropic(api_key=get_settings().anthropic_api_key, timeout=12.0, max_retries=0)
     return _client
 
 
@@ -30,16 +30,11 @@ async def complete(system: str, messages: list[dict[str, str]], max_tokens: int 
     if not is_available():
         return None
     try:
-        response = await _get_client().beta.messages.create(
+        response = await _get_client().messages.create(
             model=get_settings().anthropic_model,
             max_tokens=max_tokens,
             system=system,
             messages=messages,  # type: ignore[arg-type]
-            # Короткие ответы по готовым фрагментам — низкое усилие, быстрее
-            output_config={"effort": "low"},
-            # При отказе классификатора запрос переисполнится на рекомендованной модели
-            betas=["server-side-fallback-2026-07-01"],
-            fallbacks="default",
         )
     except anthropic.RateLimitError:
         log.warning("LLM rate limited — экстрактивный режим")
@@ -50,7 +45,10 @@ async def complete(system: str, messages: list[dict[str, str]], max_tokens: int 
     except anthropic.APIConnectionError:
         log.warning("LLM недоступен (сеть/таймаут) — экстрактивный режим")
         return None
-    if response.stop_reason == "refusal":
+    except anthropic.APIError:
+        log.warning("LLM вернул некорректный ответ — экстрактивный режим")
+        return None
+    if response.stop_reason in ("refusal", "max_tokens"):
         return None
     text = "".join(block.text for block in response.content if block.type == "text").strip()
     return text or None
