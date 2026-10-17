@@ -37,3 +37,7 @@ __pycache__
 .venv
 .pytest_cache
 .ruff_cache
+
+# Материалы хакатона (не для репозитория)
+JanaMen_business_TZ.md
+Jana_Post_Terricon_Hackathon_2026*.pdf
