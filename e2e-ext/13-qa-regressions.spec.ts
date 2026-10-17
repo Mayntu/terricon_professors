@@ -43,3 +43,19 @@ test('QA-09: кнопка DEMO оформлена на любой страниц
     expect(await fab.evaluate((el) => getComputedStyle(el).position)).toBe('fixed')
   }
 })
+
+test('QA-10: при работе с бэкендом нет текстов режима моков; в аватаре инициалы', async ({ page }) => {
+  const MOCK = /тестов(ый|ые) остат|ТЕСТОВЫЙ ОСТАТОК|сохраняются в этом браузере|mock-сервис|демонстрационной системе|тестовые условия демонстрации|Остаток демонстрационный/i
+  await loginAs(page, 'aigerim', '/dashboard')
+  await expect(page.locator('.demo-avatar')).toHaveText('АС')
+  for (const path of ['/dashboard', '/profile', '/requests/new/leave']) {
+    await page.goto(path)
+    await expect(page.locator('.query-loading')).toHaveCount(0)
+    expect(await page.locator('main').innerText()).not.toMatch(MOCK)
+  }
+  await page.goto('/requests')
+  await page.locator('.request-number').first().click()
+  expect(await page.locator('main').innerText()).not.toMatch(MOCK)
+  await loginAs(page, 'erlan', '/manager/approvals')
+  expect(await page.locator('main').innerText()).not.toMatch(MOCK)
+})
