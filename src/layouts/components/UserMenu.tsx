@@ -40,7 +40,7 @@ export function UserMenu({ role }: { role: Role }) {
   return (
     <div className="user-menu" ref={container} onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false) }}>
       <button ref={trigger} type="button" className="user-menu-trigger" aria-expanded={open} aria-controls={id} aria-label={demo ? t('Меню демо-профиля') : t('Меню профиля')} onClick={() => setOpen(!open)}>
-        <span className="demo-avatar" aria-hidden="true">JМ</span><span className="user-menu-copy"><strong>{apiEnabled ? user?.displayName : t('Демо-профиль')}</strong><span>{t(getDemoRole(role).label)}</span></span><ChevronDown size={15} aria-hidden="true" />
+        <span className="demo-avatar" aria-hidden="true">{apiEnabled && user ? user.displayName.split(/\s+/).map((w) => w[0]).join('').slice(0, 2).toUpperCase() : 'JМ'}</span><span className="user-menu-copy"><strong>{apiEnabled ? user?.displayName : t('Демо-профиль')}</strong><span>{t(getDemoRole(role).label)}</span></span><ChevronDown size={15} aria-hidden="true" />
       </button>
       <AnimatePresence>
         {open && <motion.div id={id} className="user-popover" initial={reduceMotion ? false : { opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={reduceMotion ? { opacity: 1 } : { opacity: 0, y: -4 }} transition={{ duration: reduceMotion ? 0 : 0.16 }}>

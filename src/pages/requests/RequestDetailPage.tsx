@@ -16,6 +16,7 @@ import { formatDate, formatTimestamp } from '@/features/leave/dates'
 import { nextStep } from '@/features/leave/presentation'
 import type { RequestOptions } from '@/services/contracts'
 import { ExtSlot } from '@/modules'
+import { apiEnabled } from '@/services/http/client'
 
 export default function RequestDetailPage({ manager = false }: { manager?: boolean }) {
   const t = useT()
@@ -35,7 +36,7 @@ export default function RequestDetailPage({ manager = false }: { manager?: boole
       <div id="flow-map" tabIndex={-1}><JanaFlowMap request={request} /></div>
       {(canDecide || (['Manager', 'HRAdmin'].includes(user?.role ?? '') && request.employeeId !== user?.id && ['Approved', 'Rejected'].includes(request.status))) && <DecisionPanel key={request.id} request={request} />}
       <div className="request-detail-grid"><RequestHistory request={request} />
-        <section className="request-details"><span className="eyebrow">{t('04 / ДЕТАЛИ')}</span><h2>{t('Всё о заявке')}</h2><dl className="request-facts"><div><dt>{t('Тип')}</dt><dd>{t('Отпуск')}</dd></div><div><dt>{t('Сотрудник')}</dt><dd>{request.employeeName}</dd></div><div><dt>{t('Период')}</dt><dd>{formatDate(request.startDate)} — {formatDate(request.endDate)}</dd></div><div><dt>{t('Длительность')}</dt><dd>{request.requestedDays} {t('календ. дн.')}</dd></div><div><dt>{t('Согласующий')}</dt><dd>{request.managerName}</dd></div><div><dt>{t('Создана')}</dt><dd>{formatTimestamp(request.createdAt)}</dd></div></dl>{request.comment && <div className="request-comment"><span className="eyebrow">{t('КОММЕНТАРИЙ СОТРУДНИКА')}</span><p>{request.comment}</p></div>}<p className="demo-footnote">{t('Все действия выполнены в демонстрационной системе. Даты и баланс не являются кадровым учётом.')}</p></section></div>
+        <section className="request-details"><span className="eyebrow">{t('04 / ДЕТАЛИ')}</span><h2>{t('Всё о заявке')}</h2><dl className="request-facts"><div><dt>{t('Тип')}</dt><dd>{t('Отпуск')}</dd></div><div><dt>{t('Сотрудник')}</dt><dd>{request.employeeName}</dd></div><div><dt>{t('Период')}</dt><dd>{formatDate(request.startDate)} — {formatDate(request.endDate)}</dd></div><div><dt>{t('Длительность')}</dt><dd>{request.requestedDays} {t('календ. дн.')}</dd></div><div><dt>{t('Согласующий')}</dt><dd>{request.managerName}</dd></div><div><dt>{t('Создана')}</dt><dd>{formatTimestamp(request.createdAt)}</dd></div></dl>{request.comment && <div className="request-comment"><span className="eyebrow">{t('КОММЕНТАРИЙ СОТРУДНИКА')}</span><p>{request.comment}</p></div>}<p className="demo-footnote">{(apiEnabled ? t('Решения сохраняются в истории заявки. Приказ уходит в Documentolog, остаток — в 1С:ЗУП (в прототипе — демо-интеграции).') : t('Все действия выполнены в демонстрационной системе. Даты и баланс не являются кадровым учётом.'))}</p></section></div>
     </>}
   </div>
 }

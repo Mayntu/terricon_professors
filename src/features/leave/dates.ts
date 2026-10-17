@@ -1,4 +1,5 @@
 import { getLang, registerDictionary, translate as t } from '@/modules/ext-core/i18n'
+import { apiEnabled } from '@/services/http/client'
 
 registerDictionary(
   { 'Не выбрано': 'Не выбрано', 'Выберите корректную дату начала.': 'Выберите корректную дату начала.', 'В демо дата начала не может быть в прошлом.': 'В демо дата начала не может быть в прошлом.', 'Выберите корректную дату окончания.': 'Выберите корректную дату окончания.', 'Дата окончания не может быть раньше начала.': 'Дата окончания не может быть раньше начала.', 'Период превышает тестовый остаток: {n} дн.': 'Период превышает тестовый остаток: {n} дн.' },
@@ -36,10 +37,10 @@ export function formatTimestamp(value: string) {
 export function validateLeavePeriod(start: string, end: string, availableDays: number, today = todayDate()) {
   const errors: Record<string, readonly string[]> = {}
   if (parseCalendarDate(start) === null) errors.startDate = [t('Выберите корректную дату начала.')]
-  else if (start < today) errors.startDate = [t('В демо дата начала не может быть в прошлом.')]
+  else if (start < today) errors.startDate = [apiEnabled ? t('Дата начала не может быть в прошлом.') : t('В демо дата начала не может быть в прошлом.')]
   if (parseCalendarDate(end) === null) errors.endDate = [t('Выберите корректную дату окончания.')]
   else if (parseCalendarDate(start) !== null && end < start) errors.endDate = [t('Дата окончания не может быть раньше начала.')]
   const days = calendarDays(start, end)
-  if (days !== null && days > availableDays) errors.endDate = [t('Период превышает тестовый остаток: {n} дн.', { n: availableDays })]
+  if (days !== null && days > availableDays) errors.endDate = [apiEnabled ? t('Период превышает доступный остаток: {n} дн.', { n: availableDays }) : t('Период превышает тестовый остаток: {n} дн.', { n: availableDays })]
   return errors
 }
