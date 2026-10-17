@@ -56,7 +56,7 @@ export function createHttpServices(session: DemoSessionStore): ApplicationServic
       getMyProfile: async (options) => {
         const result = await api.get<EmployeeProfile & { leaveBalance: { availableDays?: number } }>('/profile/me', options)
         if (!result.ok || result.data.leaveBalance.availableDays == null) return result
-        return { ok: true, data: { ...result.data, leaveBalance: { ...result.data.leaveBalance, days: result.data.leaveBalance.availableDays } } }
+        return { ok: true, data: { ...result.data, leaveBalance: { ...result.data.leaveBalance, days: result.data.leaveBalance.availableDays, asOf: new Date().toISOString().slice(0, 10) } } }
       },
     },
     leaveRequests: {
