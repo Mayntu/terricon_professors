@@ -11,7 +11,7 @@ function errorsOf(page: Page) {
 }
 async function login(page: Page, role = 'Сотрудник') {
   await page.goto('/login')
-  await page.getByRole('radio', { name: new RegExp(`^${role}`) }).check()
+  await page.locator('.role-option-content', { hasText: new RegExp(`^${role}`) }).click() // тап по видимому варианту, как у пользователя: на 390 px подпись перекрывает скрытый radio
   await page.getByRole('button', { name: 'Войти в пространство' }).click()
   await expect(page.locator('.app-shell')).toBeVisible()
 }
