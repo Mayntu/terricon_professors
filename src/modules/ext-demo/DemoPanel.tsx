@@ -6,6 +6,7 @@ import { browserDemoSessionStore } from '@/mocks/demo-session'
 import { registerDictionary, useT } from '../ext-core/i18n'
 import { dateTime } from '../ext-core/format'
 import { useSettings } from '../ext-core/settings'
+import '../ext-core/ext.css'
 
 registerDictionary(
   { 'demo.open': 'Демо-панель', 'demo.title': 'Демо-режим', 'demo.as': 'Войти как', 'demo.plus2': '+2 дня', 'demo.reset': 'Сброс данных', 'demo.now': 'Время платформы: {date}', 'demo.done': 'Готово' },
