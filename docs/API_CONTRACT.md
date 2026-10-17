@@ -27,6 +27,7 @@
   | `validation` | 422 |
   | `conflict` | 409 |
   | `unavailable` | 503 |
+- Ввод, который не принимает БД, — `422 VALIDATION`, а не 500: NUL-байт (`\x00`, `%00`, `\u0000`) в пути, query или теле отсекается до бизнес-логики; длина `reasonCode` ≤ 64, `comment` решения ≤ 2000, вопрос AI ≤ 1000 (метка группы «Пробелов базы» обрезается до 300 с «…»).
 - Роли: `Employee | Manager | HRAdmin`.
 - Статусы заявок: `Submitted | Approved | Rejected | Escalated | Cancelled`.
 - После обновления бэкенда демо-данные пересоздаются сами, если поменялся seed. Вручную — `POST /api/demo/reset`.
@@ -62,6 +63,7 @@
 |---|---|---|---|---|
 | ✅ | GET | `/api/profile/me` | все | `EmployeeProfile` |
 | ✅ | GET | `/api/team?unitId=&country=` | Manager (своя команда), HRAdmin (все, фильтры) | `Page<EmployeeProfile>` |
+| ✅ | GET | `/api/employees?unitId=&country=` | HRAdmin | То же, что `/api/team` для HR: все сотрудники, оклад виден (экран `/hr/employees`) |
 | ✅ | GET | `/api/employees/{id}` | сам; руководитель своей команды; HR | `EmployeeProfile`. Чужая команда → 403 |
 
 ```ts

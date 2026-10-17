@@ -3,10 +3,10 @@
 ```mermaid
 flowchart LR
   subgraph Browser
-    FE[React SPA<br/>src/ · напарник]
+    FE[React SPA<br/>экраны напарника src/pages · ext-экраны src/modules<br/>HTTP-адаптер src/services/http]
   end
   subgraph Backend[FastAPI · backend/]
-    API[Роутеры /api/*<br/>JWT + RBAC на каждом запросе]
+    API[Роутеры /api/*<br/>CORS · NUL-guard · JWT + RBAC на каждом запросе]
     CORE[core: org · requests engine · notifications · events · ticks · clock]
     MOD[modules: profile · leave · hr_question · academy · ai_jana<br/>ext_*: guarantees · wage · hr_console · ladder · grievance · xray · kb_gaps · shifts]
     INT[integrations]

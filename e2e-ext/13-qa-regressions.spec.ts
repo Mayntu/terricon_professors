@@ -30,3 +30,12 @@ test('QA-03: в профиле есть назначенное обучение 
   await expect(block).toContainText('25%')
   await expect(block).toContainText('30 окт')
 })
+
+test('QA-09: кнопка DEMO оформлена на любой странице, даже без других ext-блоков', async ({ page }) => {
+  for (const path of ['/requests/new/leave', '/hr/requests']) {
+    await loginAs(page, 'aigerim', path)
+    const fab = page.getByRole('button', { name: 'Демо-панель' })
+    await expect(fab).toBeVisible()
+    expect(await fab.evaluate((el) => getComputedStyle(el).position)).toBe('fixed')
+  }
+})
