@@ -13,7 +13,7 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.modules.ai_jana.models import KbDoc
-from app.modules.ai_jana.text import stem, terms, words
+from app.modules.ai_jana.text import from_kk, stem, terms, words
 
 MAX_CHUNK = 800
 
@@ -76,7 +76,7 @@ class CountryIndex:
             return []
         scores = self.bm25.get_scores(q)
         total = sum(self.idf.get(t, self.unknown_idf) for t in q)
-        raw = {stem(w) for w in words(question)}
+        raw = {stem(from_kk(w)) for w in words(question)}  # казахские слова — в русские основы
         candidates = sorted(range(len(self.chunks)), key=lambda i: scores[i], reverse=True)[: k * 3]
         hits = []
         for i in candidates:
