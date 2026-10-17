@@ -58,19 +58,19 @@ async def test_soft_mode_without_reason_code(client, login, monkeypatch):
     assert r.status_code == 200 and r.json()["decisionReasonCode"] == "OTHER"
 
 
-async def test_auto_approve_after_deadline(client, login):
+async def test_escalate_after_deadline(client, login):
     he, ha = await login("erlan"), await login("aigerim")
     rid = (await aigerim_pending(client, he))["id"]
     await client.post("/api/demo/advance-time", json={"hours": 45})  # 47 ч от создания
     assert (await client.get(f"/api/requests/{rid}", headers=ha)).json()["status"] == "Submitted"
     await client.post("/api/demo/advance-time", json={"hours": 2})  # sla+1ч от создания (создана 2 ч назад)
     card = (await client.get(f"/api/leave/{rid}", headers=ha)).json()
-    assert card["status"] == "Approved" and card["decidedBySystem"] is True
-    assert card["extensions"]["guarantee"]["resolution"] == "auto_approved"
-    assert [h["actorId"] for h in card["history"] if h["event"] == "approved"] == ["system"]
+    assert card["status"] == "Escalated" and card["decidedBySystem"] is False
+    assert card["extensions"]["guarantee"]["resolution"] == "escalated"
+    assert [h["actorId"] for h in card["history"] if h["event"] == "escalated"] == ["system"]
     note = (await client.get("/api/notifications?unreadOnly=true", headers=ha)).json()["items"][0]
-    assert "по политике HR" in note["message"]
-    assert card["documents"]  # приказ сформирован и при автоодобрении
+    assert "передана HR" in note["message"]
+    assert not card["documents"]  # приказ появляется только после решения человека
 
 
 async def test_hr_question_overdue_marked(client, login):

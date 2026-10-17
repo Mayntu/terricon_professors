@@ -53,7 +53,7 @@ export async function request<T>(method: string, path: string, body?: unknown, o
   if (!response.ok) {
     const p = (payload ?? {}) as { kind?: string; code?: string; message?: string; fieldErrors?: Record<string, string[]>; data?: Record<string, unknown> }
     const kind = (KINDS.has(p.kind as ServiceProblem['kind']) ? p.kind : response.status >= 500 ? 'unavailable' : 'validation') as ServiceProblem['kind']
-    if (kind === 'unauthenticated') tokenStore.write(null)
+    if (kind === 'unauthenticated' && token && tokenStore.read() === token) { tokenStore.write(null); window.dispatchEvent(new Event('jana:session-expired')) }
     return { ok: false, problem: { kind, message: p.message ?? 'Не удалось выполнить действие.', ...(p.code ? { code: p.code } : {}), ...(p.data ? { data: p.data } : {}), ...(p.fieldErrors ? { fieldErrors: p.fieldErrors } : {}) } }
   }
   if (method !== 'GET') revisionStore.bump()

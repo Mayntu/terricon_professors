@@ -86,26 +86,24 @@ async def on_decided(session: AsyncSession, request: Request, **_: Any) -> None:
 
 async def tick(session: AsyncSession, now: datetime) -> None:
     rows = await session.scalars(
-        select(RequestGuarantee).where(RequestGuarantee.resolution == "none", RequestGuarantee.deadline_at <= now)
+        select(RequestGuarantee).where(RequestGuarantee.resolution == "none", RequestGuarantee.deadline_at <= now).order_by(RequestGuarantee.request_id)
     )
     for g in list(rows):
-        req = await session.get(Request, g.request_id)
+        req = await requests.lock_for_update(session, g.request_id)
+        await session.refresh(g)
+        if g.resolution != "none":
+            continue
         policy = await session.get(Policy, g.policy_id)
         if req is None or policy is None or req.status not in (SUBMITTED, ESCALATED):
             continue
-        if req.status == SUBMITTED and policy.on_timeout == "auto_approve":
-            await requests.decide_by_system(
-                session, req.id, "Approved", "Срок ответа истёк — одобрено автоматически по политике HR", "SLA_AUTO_APPROVE"
-            )
-            g.resolution, g.resolved_at = "auto_approved", now
-        elif req.status == SUBMITTED and req.approver_kind == "manager":
+        if req.status == SUBMITTED and req.approver_kind == "manager":
             await requests.escalate_to_hr(session, req.id, "Срок ответа руководителя истёк — заявка передана HR")
             g.resolution, g.resolved_at = "escalated", now
         else:
             # Уже адресовано HR и просрочено — отметка и напоминание HR (виден в радаре)
             await requests.add_note(session, req, "deadline_missed", {"deadlineAt": g.deadline_at.isoformat()})
             owner = await session.get(Employee, req.employee_id)
-            for hr in await list_hr(session, owner.country if owner else None) or await list_hr(session):
+            for hr in ((await list_hr(session, owner.country, owner.organization_id) or await list_hr(session, organization_id=owner.organization_id)) if owner else []):
                 await notify(
                     session, hr.id, "guarantee.overdue", "notif.guarantee.overdue.title", "notif.guarantee.overdue.body",
                     {"number": req.number}, {"kind": "request", "requestId": req.id},

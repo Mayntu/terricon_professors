@@ -55,10 +55,10 @@ async def main() -> None:
         step(f"Отказ без причины → {r.json().get('code')}", r.status_code == 422 and r.json()["code"] == "REASON_REQUIRED")
         step("Профиль сотрудника смены А → 403", (await c.get("/employees/emp-asel", headers=E)).status_code == 403)
 
-        print("4. Демо «+2 дня» → отпуск «Одобрено по сроку»")
+        print("4. Демо «+2 дня» → отпуск «Передано HR»")
         await c.post("/demo/advance-time", json={"hours": 48})
         card = (await c.get(f"/leave/{pend['id']}", headers=A)).json()
-        step(f"Статус {card['status']}, решение системы, resolution={card['extensions']['guarantee']['resolution']}", card["status"] == "Approved" and card["decidedBySystem"])
+        step(f"Статус {card['status']}, ожидает HR, resolution={card['extensions']['guarantee']['resolution']}", card["status"] == "Escalated" and not card["decidedBySystem"])
         await c.post("/demo/reset")  # дальше — с исходного состояния
         A, E, D, BK = await as_("aigerim"), await as_("erlan"), await as_("daniyar"), await as_("bakyt")
 

@@ -10,7 +10,8 @@ import { formatTimestamp } from '../dates'
 import type { LeaveRequest } from '../model'
 
 export function JanaFlowMap({ request, compact = false }: { request: LeaveRequest; compact?: boolean }) {
-  const pending = request.status === 'Submitted'
+  const escalated = request.status === 'Escalated'
+  const pending = request.status === 'Submitted' || escalated
   const approved = request.status === 'Approved'
   const rejected = request.status === 'Rejected'
   const { user } = useDemoSession()
@@ -20,13 +21,16 @@ export function JanaFlowMap({ request, compact = false }: { request: LeaveReques
   const cardId = useId()
   const [inspection, setInspection] = useState<{ requestId: string; version: number; index: number } | null>(null)
   const selected = inspection?.requestId === request.id && inspection.version === request.version ? inspection.index : pending ? 1 : 2
+  const responsible = escalated || !request.managerId ? 'HR' : request.managerName
+  const decisionEvent = request.history.findLast(e => ['approved', 'rejected', 'cancelled'].includes(e.event ?? e.status.toLowerCase()))
+  const decisionActor = pending ? responsible : decisionEvent?.actorLabel ?? event?.actorLabel ?? responsible
   const nodes = [
-    { title: 'Отправлено', person: request.employeeName, state: 'done', caption: 'Заявка зарегистрирована', detail: `Маршрут открыт ${formatTimestamp(request.createdAt)}. Период и комментарий переданы руководителю.` },
-    { title: pending ? 'У руководителя' : approved ? 'Согласовано' : rejected ? 'Отклонено' : 'Отменено', person: request.managerName, state: pending ? 'current' : approved ? 'done' : 'rejected', caption: pending ? 'Согласование · ожидает решения' : 'Решение записано в историю', detail: pending ? 'Следующее действие — согласовать заявку или отклонить её с причиной. Уведомление появится после решения.' : event?.comment || 'Руководитель подтвердил решение. Запись сохранена в истории заявки.' },
-    { title: pending ? 'Ваш результат' : approved ? 'Согласована' : rejected ? 'Отклонена' : 'Отменена', person: request.employeeName, state: pending ? 'waiting' : 'done', caption: pending ? 'После решения руководителя' : 'Уведомление создано', detail: pending ? 'Этот участок ещё не пройден. Здесь появится результат согласования.' : approved ? 'Отпуск согласован в демо-системе. Тестовый остаток обновлён, уведомление доступно сотруднику.' : event?.comment || 'Заявка закрыта. Тестовый остаток не изменён.' },
+    { title: 'Отправлено', person: request.employeeName, state: 'done', caption: 'Заявка зарегистрирована', detail: `Маршрут открыт ${formatTimestamp(request.createdAt)}. ${escalated ? 'Срок ответа руководителя истёк; заявка передана HR.' : 'Период и комментарий переданы согласующему.'}` },
+    { title: pending ? (escalated || !request.managerId ? 'У HR' : 'У руководителя') : approved ? 'Согласовано' : rejected ? 'Отклонено' : 'Отменено', person: decisionActor, state: pending ? 'current' : approved ? 'done' : 'rejected', caption: pending ? 'Согласование · ожидает решения' : 'Решение записано в историю', detail: pending ? `Следующее действие — решение ${responsible}. Отпускные дни зарезервированы до решения.` : decisionEvent?.comment || 'Согласующий подтвердил решение. Запись сохранена в истории заявки.' },
+    { title: pending ? 'Ваш результат' : approved ? 'Согласована' : rejected ? 'Отклонена' : 'Отменена', person: request.employeeName, state: pending ? 'waiting' : 'done', caption: pending ? 'После решения согласующего' : 'Уведомление создано', detail: pending ? 'Этот участок ещё не пройден. Здесь появится результат согласования.' : approved ? 'Отпуск согласован. Доступный остаток обновлён, уведомление доступно сотруднику.' : decisionEvent?.comment || 'Заявка закрыта. Резерв отпускных дней освобождён.' },
   ]
   const stage = nodes[selected] ?? nodes[1]!
-  return <section ref={root} className={`jana-flow-map living-route ${compact ? 'jana-flow-map--compact' : ''}`} data-surface="dark" data-status={request.status} data-tone={rejected ? 'warm' : 'normal'} aria-label="Jana Flow Map">
+  return <section ref={root} className={`jana-flow-map living-route ${compact ? 'jana-flow-map--compact' : ''}`} data-surface="dark" data-status={request.status} data-tone={rejected || request.status === 'Cancelled' ? 'warm' : 'normal'} aria-label="Jana Flow Map">
     <div className="flow-map-heading"><span className="eyebrow">JANA FLOW MAP <span>/ L–01</span></span><span className="flow-map-live"><span />{pending ? 'Маршрут активен' : 'Маршрут завершён'}</span></div>
     <div className="route-graphic">
       {(['horizontal', 'vertical'] as const).map((layout) => {

@@ -82,9 +82,12 @@ async def detect(session: AsyncSession, emp: Employee, now: datetime) -> dict[st
     return found
 
 
-async def recalculate(session: AsyncSession, now: datetime) -> None:
+async def recalculate(session: AsyncSession, now: datetime, organization_id: str | None = None) -> None:
     """Пересчёт: новые сигналы открываются, исчезнувшие причины — закрываются. Действия HR сохраняются."""
-    people = await session.scalars(select(Employee).where(Employee.active, Employee.role != "HRAdmin"))
+    query = select(Employee).where(Employee.active, Employee.role != "HRAdmin")
+    if organization_id:
+        query = query.where(Employee.organization_id == organization_id)
+    people = await session.scalars(query)
     for emp in list(people):
         found = await detect(session, emp, now)
         current = {

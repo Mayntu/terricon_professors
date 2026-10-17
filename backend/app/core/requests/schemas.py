@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.i18n import t
 from app.core.org.models import Employee
 from app.core.requests import service
-from app.core.requests.models import Request
+from app.core.requests.models import Request, ESCALATED
 from app.core.requests.registry import request_extensions, request_types
 from app.core.schemas import ApiModel
 
@@ -78,6 +78,8 @@ async def present(session: AsyncSession, req: Request, viewer: Employee) -> Requ
     ids = {i for i in [req.employee_id, req.approver_id, *(e.actor_id for e in req.events)] if i}
     names = await _names(session, ids)
     lang = viewer.lang
+    hr_route = req.status == ESCALATED or any(e.event == "escalated" for e in req.events)
+    approver_id = req.decided_by if hr_route else req.approver_id
 
     def actor_label(actor_id: str | None) -> str:
         if actor_id is None:
@@ -94,9 +96,9 @@ async def present(session: AsyncSession, req: Request, viewer: Employee) -> Requ
         status=req.status,
         employee_id=None if hidden else req.employee_id,
         employee_name=None if hidden else names.get(req.employee_id),
-        approver_kind=req.approver_kind,
-        approver_id=req.approver_id,
-        approver_name=names.get(req.approver_id) if req.approver_id else None,
+        approver_kind="hr" if hr_route else req.approver_kind,
+        approver_id=approver_id,
+        approver_name=(names.get(approver_id) or "HR") if hr_route else names.get(approver_id),
         payload=req.payload,
         submission_key=req.submission_key if req.employee_id == viewer.id else None,
         created_at=req.created_at,

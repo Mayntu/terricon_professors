@@ -23,6 +23,8 @@ COMPANY = "Jana Post"
 async def build_profile(session: AsyncSession, viewer: Employee, emp: Employee) -> EmployeeProfile:
     unit = await get_unit(session, emp.unit_id)
     manager = await session.get(Employee, emp.manager_id) if emp.manager_id else None
+    if manager and not rbac.is_my_team(manager, emp):
+        manager = None
     zup = get_zup()
     attrs = await zup.get_hr_attrs(session, emp.id)
     salary = await zup.get_salary(session, emp.id) if rbac.can_view_salary(viewer, emp) else None
@@ -81,7 +83,7 @@ async def team(
             raise forbidden("Фильтры доступны только HR")
         rows = await list_team(session, user.id)
     else:
-        q = select(Employee).where(Employee.active).order_by(Employee.full_name)
+        q = select(Employee).where(Employee.active, Employee.organization_id == user.organization_id).order_by(Employee.full_name)
         if unit_id:
             q = q.where(Employee.unit_id == unit_id)
         if country:

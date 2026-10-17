@@ -49,7 +49,10 @@ async def metrics_for(session: AsyncSession, manager: Employee) -> ManagerMetric
     since = clock.now() - timedelta(days=WINDOW_DAYS)
     rows = list(
         await session.scalars(
-            select(Request).where(Request.approver_id == manager.id, Request.approver_kind == "manager", Request.created_at >= since)
+            select(Request).join(Employee, Employee.id == Request.employee_id).where(
+                Request.approver_id == manager.id, Request.approver_kind == "manager",
+                Request.created_at >= since, Employee.organization_id == manager.organization_id,
+            )
         )
     )
     by_manager = [r for r in rows if r.decided_by == manager.id and r.decided_at]
@@ -78,8 +81,10 @@ async def metrics_for(session: AsyncSession, manager: Employee) -> ManagerMetric
     )
 
 
-async def all_metrics(session: AsyncSession, country: str | None = None) -> list[ManagerMetrics]:
+async def all_metrics(session: AsyncSession, country: str | None = None, organization_id: str | None = None) -> list[ManagerMetrics]:
     q = select(Employee).where(Employee.role == rbac.MANAGER, Employee.active)
+    if organization_id:
+        q = q.where(Employee.organization_id == organization_id)
     if country:
         q = q.where(Employee.country == country)
     items = [await metrics_for(session, m) for m in await session.scalars(q)]
@@ -90,13 +95,13 @@ async def all_metrics(session: AsyncSession, country: str | None = None) -> list
 @router.get("", response_model=Page[ManagerMetrics], response_model_by_alias=True)
 async def xray(country: str | None = None, user: Employee = Depends(rbac.require_role(rbac.HR)), session: AsyncSession = DbSession):
     """Все руководители, сначала — с наибольшим числом решений позже срока."""
-    return Page(items=await all_metrics(session, country))
+    return Page(items=await all_metrics(session, country, user.organization_id))
 
 
 @router.get("/me", response_model=MyXray, response_model_by_alias=True)
 async def xray_me(user: Employee = Depends(rbac.require_role(rbac.MANAGER)), session: AsyncSession = DbSession):
     """Руководитель видит только свои метрики и своё место среди коллег — без чужих имён и цифр."""
-    everyone = await all_metrics(session)
+    everyone = await all_metrics(session, organization_id=user.organization_id)
     mine = next(m for m in everyone if m.manager_id == user.id)
     peers = [m for m in everyone if m.manager_id != user.id]
     timed = [m for m in peers if m.median_response_hours is not None]

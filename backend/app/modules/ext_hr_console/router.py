@@ -54,9 +54,9 @@ async def card(session: AsyncSession, emp: Employee, signals: list[RiskSignal], 
 @router.get("/risks", response_model=Page[RiskCard], response_model_by_alias=True)
 async def risks(country: str | None = None, user: Employee = HR_ONLY, session: AsyncSession = DbSession):
     """Радар: сотрудники с открытыми или обработанными сигналами, сначала — с наибольшим числом причин."""
-    q = select(RiskSignal, Employee).join(Employee, Employee.id == RiskSignal.employee_id).where(RiskSignal.status != "resolved")
+    q = select(RiskSignal, Employee).join(Employee, Employee.id == RiskSignal.employee_id).where(RiskSignal.status != "resolved", Employee.organization_id == user.organization_id)
     if country:
-        q = q.where(Employee.country == country)
+        q = q.where(Employee.country == country, Employee.organization_id == user.organization_id)
     by_emp: dict[str, tuple[Employee, list[RiskSignal]]] = {}
     for signal, emp in (await session.execute(q.order_by(RiskSignal.detected_at))).all():
         by_emp.setdefault(emp.id, (emp, []))[1].append(signal)
@@ -78,6 +78,7 @@ async def _signal(session: AsyncSession, signal_id: str) -> tuple[RiskSignal, Em
 async def propose_review(signal_id: str, user: Employee = HR_ONLY, session: AsyncSession = DbSession):
     """«Предложить пересмотр» → пересмотр зарплаты, уведомление сотруднику, сигнал обработан."""
     s, emp = await _signal(session, signal_id)
+    rbac.ensure(rbac.same_organization(user, emp))
     if s.status == "resolved":
         raise conflict("SIGNAL_RESOLVED", "Сигнал уже закрыт")
     review_date = clock.today() + timedelta(days=REVIEW_IN_DAYS)
@@ -96,6 +97,7 @@ async def propose_review(signal_id: str, user: Employee = HR_ONLY, session: Asyn
 async def confirm_retained(signal_id: str, user: Employee = HR_ONLY, session: AsyncSession = DbSession):
     """«Сотрудник остался» — попадает в счётчик сохранённых денег."""
     s, emp = await _signal(session, signal_id)
+    rbac.ensure(rbac.same_organization(user, emp))
     s.retained_confirmed = True
     if s.status == "open":
         s.status, s.actioned_at = "actioned", clock.now()
@@ -105,7 +107,7 @@ async def confirm_retained(signal_id: str, user: Employee = HR_ONLY, session: As
 
 @router.post("/risks/recalculate", response_model=Page[RiskCard], response_model_by_alias=True)
 async def recalc(country: str | None = None, user: Employee = HR_ONLY, session: AsyncSession = DbSession):
-    await recalculate(session, clock.now())
+    await recalculate(session, clock.now(), user.organization_id)
     return await risks(country, user, session)
 
 
@@ -117,7 +119,7 @@ async def savings(country: str | None = None, user: Employee = HR_ONLY, session:
             await session.scalars(
                 select(RiskSignal.employee_id)
                 .join(Employee, Employee.id == RiskSignal.employee_id)
-                .where(RiskSignal.retained_confirmed, Employee.country == country)
+                .where(RiskSignal.retained_confirmed, Employee.country == country, Employee.organization_id == user.organization_id)
             )
         )
     )

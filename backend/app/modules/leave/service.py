@@ -6,7 +6,7 @@ from app.core import clock
 from app.core.errors import conflict, validation
 from app.core.org.models import Employee
 from app.core.requests import service as requests
-from app.core.requests.models import APPROVED, SUBMITTED, Request
+from app.core.requests.models import APPROVED, OPEN_STATUSES, Request
 from app.integrations.zup import get_zup
 
 TYPE = "vacation"
@@ -34,7 +34,7 @@ async def balance(session: AsyncSession, employee: Employee) -> dict:
             continue
         if req.status == APPROVED:
             approved += req.payload["requestedDays"]
-        elif req.status == SUBMITTED:
+        elif req.status in OPEN_STATUSES:
             pending += req.payload["requestedDays"]
     days = attrs.vacation_days_left - approved
     return {"days": days, "as_of": attrs.vacation_as_of, "pending_days": pending, "available_days": days - pending}
@@ -52,7 +52,7 @@ async def validate_new(session: AsyncSession, employee: Employee, start: date, e
             "INSUFFICIENT_BALANCE", f"Доступно {available} дн., запрошено {days}", "endDate", {"available": available}
         )
     for other in await requests.list_mine(session, employee, TYPE):
-        if other.status in (SUBMITTED, APPROVED):
+        if other.status in (*OPEN_STATUSES, APPROVED):
             o_start, o_end = period(other)
             if start <= o_end and o_start <= end:
                 raise conflict("OVERLAP", f"Пересекается с заявкой {other.number}", {"number": other.number})

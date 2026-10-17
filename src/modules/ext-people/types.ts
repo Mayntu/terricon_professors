@@ -7,6 +7,7 @@ export interface Profile {
 export interface Req {
   id: string; number: string; type: string; typeTitle: string; status: string; employeeId: string | null; employeeName: string | null
   approverKind: string; approverName: string | null; payload: Record<string, unknown>; createdAt: string; decidedAt: string | null; decidedBySystem: boolean
+  version: number; permissions: { canDecide: boolean; canCancel: boolean }
   decisionReasonCode: string | null; decisionComment: string | null
   history: { id: string; event: string; status: string; occurredAt: string; actorLabel: string; comment: string | null }[]
   documents: { id: string; kind: string; number: string }[]

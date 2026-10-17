@@ -172,6 +172,8 @@ test('демо-панель: вход за всех 8 персонажей, +2 �
   for (const name of ['Нурлан', 'Асель', 'Ерлан', 'Гульнара', 'Данияр', 'Бакыт', 'Айбек', 'Айгерим']) {
     await page.getByRole('button', { name: 'Демо-панель' }).click()
     await page.getByTestId('demo-panel').getByRole('button', { name: new RegExp(name) }).click()
+    // Панель меняет персонажа через полную навигацию: дождаться нового профиля, прежде чем читать sessionStorage.
+    await expect(page.locator('.user-menu-trigger')).toContainText(name)
     await expect(page.locator('main')).toBeVisible()
     await expect(page.locator('.app-shell')).toBeVisible()
     await expect.poll(async () => {
@@ -184,10 +186,13 @@ test('демо-панель: вход за всех 8 персонажей, +2 �
   const panel = page.getByTestId('demo-panel')
   await panel.getByRole('button', { name: '+2 дня' }).click()
   await expect(panel.getByRole('status')).toContainText('Время платформы')
-  await panel.getByRole('button', { name: 'Сброс данных' }).click()
-  await expect(panel.getByRole('status')).toContainText('Время платформы')
-  await panel.getByRole('button', { name: 'Сброс данных' }).click()
-  await expect(panel.getByRole('status')).toContainText('Время платформы')
+  for (let i = 0; i < 2; i++) {
+    const reset = page.waitForResponse(r => r.url().endsWith('/api/demo/reset') && r.request().method() === 'POST')
+    await panel.getByRole('button', { name: 'Сброс данных' }).click()
+    expect((await reset).status()).toBe(200)
+    await expect(panel.getByRole('button', { name: 'Сброс данных' })).toBeEnabled()
+    await expect(panel.getByRole('status')).toContainText('Время платформы')
+  }
   await page.reload()
   await expect(page.locator('.app-shell')).toBeVisible()
   await shot(page, 'demo-panel-after-reset')

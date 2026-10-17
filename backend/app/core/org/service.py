@@ -17,16 +17,19 @@ async def find_by_login(session: AsyncSession, login: str) -> Employee | None:
 
 
 async def list_team(session: AsyncSession, manager_id: str) -> list[Employee]:
+    manager = await get_employee(session, manager_id)
     rows = await session.scalars(
-        select(Employee).where(Employee.manager_id == manager_id, Employee.active).order_by(Employee.full_name)
+        select(Employee).where(Employee.manager_id == manager_id, Employee.active, Employee.organization_id == manager.organization_id).order_by(Employee.full_name)
     )
     return list(rows)
 
 
-async def list_hr(session: AsyncSession, country: str | None = None) -> list[Employee]:
+async def list_hr(session: AsyncSession, country: str | None = None, organization_id: str | None = None) -> list[Employee]:
     q = select(Employee).where(Employee.role == "HRAdmin", Employee.active)
     if country:
         q = q.where(Employee.country == country)
+    if organization_id:
+        q = q.where(Employee.organization_id == organization_id)
     return list(await session.scalars(q))
 
 

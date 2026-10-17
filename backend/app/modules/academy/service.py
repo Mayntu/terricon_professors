@@ -132,7 +132,7 @@ async def assign(
     session: AsyncSession, actor: Employee, employee_id: str, course_id: str, due_date: date | None
 ) -> Assignment:
     employee = await get_employee(session, employee_id)
-    if not (actor.role == rbac.HR or rbac.is_my_team(actor, employee)):
+    if not (rbac.same_organization(actor, employee) and (actor.role == rbac.HR or rbac.is_my_team(actor, employee))):
         raise forbidden("Назначать курсы можно только своей команде")
     course = await visible_course(session, employee, course_id)
     if due_date is not None and due_date < clock.today():

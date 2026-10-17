@@ -106,7 +106,7 @@ async def list_team(
 ):
     """Все заявки команды (любой статус). Для HR — все заявки на отпуск."""
     if user.role == rbac.HR:
-        rows = await requests.list_all(session, TYPE)
+        rows = await requests.list_all(session, TYPE, organization_id=user.organization_id)
     else:
         rows = await requests.list_inbox(session, user, False, TYPE)
     return await _page(session, rows, user)

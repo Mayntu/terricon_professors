@@ -19,6 +19,11 @@ async def notify(
     link: str | None = None,
 ) -> Notification:
     """Создать уведомление. Тексты — ключи i18n (app.core.i18n), рендерятся на языке получателя."""
+    if target is None and link is None:
+        if kind.startswith("shift."):
+            link = "/shifts"
+        elif kind.startswith(("salary.", "ladder.")):
+            link = "/profile"
     n = Notification(
         id=new_id(),
         employee_id=employee_id,

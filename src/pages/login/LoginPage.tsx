@@ -1,6 +1,9 @@
 import { useEffect } from 'react'
 import { Navigate } from 'react-router'
 import { Wordmark } from '@/components/brand/Wordmark'
+import { LoginForm } from '@/features/identity/components/LoginForm'
+import { apiEnabled } from '@/services/http/client'
+import '@/modules/ext-core/ext.css'
 import { DemoLoginForm } from '@/features/identity/components/DemoLoginForm'
 import { useDemoSession } from '@/features/identity/demo-context'
 import { getDemoRole } from '@/features/identity/demo-roles'
@@ -27,7 +30,7 @@ export default function LoginPage() {
             <span className="title-mask title-last-line" aria-hidden="true"><span className="js-title-line">ритме<span className="title-period">.</span></span></span>
           </h1>
           <p className="login-description">Отпуск, обучение и поддержка HR.<br />Все рабочие вопросы — в одном месте.</p>
-          <DemoLoginForm />
+          {apiEnabled ? <LoginForm /> : <DemoLoginForm />}
         </main>
         <footer className="login-footer"><span className="eyebrow">СОЗДАНО ВОКРУГ ЧЕЛОВЕКА</span><span className="login-footer-mark" aria-hidden="true">J / M <span>↗</span></span></footer>
       </div>

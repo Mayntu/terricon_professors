@@ -1,4 +1,6 @@
 import { useEffect, useRef } from 'react'
+import { apiEnabled } from '@/services/http/client'
+import { useSettings } from '@/modules/ext-core/settings'
 import { ArrowUpRight } from 'lucide-react'
 import { NotificationLink } from '@/features/notifications/NotificationLink'
 import { Link, useLocation } from 'react-router'
@@ -13,6 +15,8 @@ import { supportNavigation } from './navigation'
 import { ExtSlot } from '@/modules/ext-core/ExtSlot'
 
 export default function AppShell({ role }: { role: Role }) {
+  const settings = useSettings()
+  const demo = !apiEnabled || settings.demoMode
   const { pathname } = useLocation()
   const main = useRef<HTMLElement>(null)
   const previousPath = useRef<string | null>(null)
@@ -40,7 +44,7 @@ export default function AppShell({ role }: { role: Role }) {
         <header className="workspace-header">
           <Link to={roleInfo.home} className="mobile-brand" aria-label="JanaМен — начало"><Wordmark /></Link>
           <div className="workspace-breadcrumb"><span className="workspace-location-dot" /><span>JanaМен</span><span className="breadcrumb-divider">/</span><strong>{roleInfo.description}</strong></div>
-          <div className="workspace-tools"><span className="workspace-demo-tag">ДЕМО</span><NotificationLink /><span className="toolbar-divider" /><UserMenu role={role} /></div>
+          <div className="workspace-tools">{demo && <span className="workspace-demo-tag">ДЕМО</span>}<NotificationLink /><span className="toolbar-divider" /><UserMenu role={role} /></div>
         </header>
         <main className="workspace-main" id="workspace-content" tabIndex={-1} ref={main}><PageTransition /></main>
         <footer className="workspace-footer"><span><span className="status-dot" /> Пространство для вашего рабочего дня</span><span className="eyebrow">J / M — {roleInfo.index}</span></footer>

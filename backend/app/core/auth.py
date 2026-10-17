@@ -38,6 +38,7 @@ def issue_token(emp: Employee) -> str:
     # exp — по реальному времени, а не clock.now(): перевод часов в демо не должен разлогинивать
     payload = {
         "sub": emp.id,
+        "ver": emp.auth_version,
         "role": emp.role,
         "country": emp.country,
         "name": emp.full_name,
@@ -57,11 +58,11 @@ async def current_user(
     if creds is None:
         raise _unauthenticated()
     try:
-        payload = jwt.decode(creds.credentials, get_settings().jwt_secret, algorithms=["HS256"])
+        payload = jwt.decode(creds.credentials, get_settings().jwt_secret, algorithms=["HS256"], options={"require": ["exp", "sub"]})
     except jwt.PyJWTError:
         raise _unauthenticated("Сессия истекла, войдите снова") from None
     emp = await session.get(Employee, payload.get("sub"))
-    if emp is None or not emp.active:
+    if emp is None or not emp.active or payload.get("ver", 0) != emp.auth_version:
         raise _unauthenticated()
     return emp
 

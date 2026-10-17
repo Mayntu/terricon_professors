@@ -5,6 +5,7 @@ import type { ServiceResult } from '@/services/contracts'
 export interface DemoSessionContextValue {
   role: Role | null
   user: User | null
+  enterPassword: (login: string, password: string) => Promise<ServiceResult<User>>
   enterDemo: (role: Role) => Promise<ServiceResult<User>>
   leaveDemo: () => Promise<void>
 }

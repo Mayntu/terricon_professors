@@ -136,7 +136,7 @@ async def team_progress(
     if user.role == rbac.MANAGER:
         people = await list_team(session, user.id)
     else:
-        q = select(Employee).where(Employee.active)
+        q = select(Employee).where(Employee.active, Employee.organization_id == user.organization_id)
         if unit_id:
             q = q.where(Employee.unit_id == unit_id)
         if country:

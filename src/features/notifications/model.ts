@@ -1,4 +1,5 @@
 export type NotificationTarget =
+  | { readonly kind: 'link'; readonly href: string }
   | { readonly kind: 'request'; readonly requestId: string }
   | { readonly kind: 'course'; readonly courseId: string }
 

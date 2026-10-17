@@ -19,16 +19,15 @@ const mapOne = (result: ServiceResult<ApiLeave>): ServiceResult<LeaveRequest> =>
 type ApiNotification = Omit<EmployeeNotification, 'target'> & { readonly target: EmployeeNotification['target'] | null; readonly link?: string | null }
 const toNotification = (n: ApiNotification): EmployeeNotification => {
   if (n.target) return n as EmployeeNotification
-  const course = n.link?.match(/^\/academy\/(?:courses\/)?([^/?#]+)/)
-  const request = n.link?.match(/^\/requests\/([^/?#]+)/)
-  return { ...n, target: course?.[1] ? { kind: 'course', courseId: course[1] } : { kind: 'request', requestId: request?.[1] ?? '' } }
+  const href = n.link && /^\/(?![/\\])/.test(n.link) ? n.link : '/notifications'
+  return { ...n, target: { kind: 'link', href } }
 }
 const mapPage = (result: ServiceResult<Page<ApiLeave>>): ServiceResult<Page<LeaveRequest>> => (result.ok ? { ok: true, data: { ...result.data, items: result.data.items.map(toLeave) } } : result)
 
 /** Реальные сервисы поверх API бэкенда (docs/API_CONTRACT.md). Те же контракты, что и у mock-адаптера. */
 export function createHttpServices(session: DemoSessionStore): ApplicationServices {
-  async function signIn(body: { role: Role } | { login: string }): Promise<ServiceResult<User>> {
-    const result = await api.post<LoginOut>('/demo/login-as', body)
+  async function signIn(body: { role: Role } | { login: string; password?: string }, path = '/demo/login-as'): Promise<ServiceResult<User>> {
+    const result = await api.post<LoginOut>(path, body)
     if (!result.ok) return result
     tokenStore.write(result.data.accessToken)
     session.writeRole(result.data.user.role)
@@ -47,8 +46,9 @@ export function createHttpServices(session: DemoSessionStore): ApplicationServic
         if (result.ok) session.writeRole(result.data.role)
         return result
       },
+      signIn: (login, password) => signIn({ login, password }, '/auth/login'),
       signInDemo: (role) => signIn({ role }),
-      async signOut() { tokenStore.write(null); session.writeRole(null); revisionStore.bump(); return { ok: true, data: null } },
+      async signOut() { if (tokenStore.read()) await api.post('/auth/logout'); tokenStore.write(null); session.writeRole(null); revisionStore.bump(); return { ok: true, data: null } },
     },
     profiles: {
       // Кейс: остаток отпуска — с учётом заявок на рассмотрении. Бэкенд отдаёт и остаток 1С (days),

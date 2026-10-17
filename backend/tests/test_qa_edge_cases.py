@@ -85,8 +85,8 @@ async def test_anonymous_author_never_leaks(client, login):
     assert r.status_code == 403 and not any(m in r.text for m in AUTHOR_MARKERS)
     # Рентген: обращение не попадает в метрики руководителя
     xr = (await client.get("/api/ext/hr/xray?country=KG", headers=hd)).json()["items"][0]
-    # Отпуск Бакыта за 80 ч одобрен системой (KG: 72 ч), обращение адресовано HR и в метрики руководителя не входит
-    assert xr["pendingNow"] == 0 and xr["lateDecisions"] == 1
+    # Отпуск Бакыта за 80 ч передан HR (KG: 72 ч) и остаётся открытым; анонимное обращение в метрики не входит.
+    assert xr["pendingNow"] == 1 and xr["lateDecisions"] == 1
 
 
 # ---------- Academy: правильные ответы не уходят клиенту ----------

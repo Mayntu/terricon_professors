@@ -140,7 +140,7 @@ async def publish(body: PublishIn, user: Employee = Depends(rbac.require_role(rb
 @router.get("/team", response_model=Page[TeamShiftOut], response_model_by_alias=True)
 async def team(user: Employee = Depends(rbac.require_role(rbac.MANAGER, rbac.HR)), session: AsyncSession = DbSession):
     """Руководитель видит все смены и обмены своего центра (без согласования); HR — все."""
-    q = select(Shift).where(Shift.date >= clock.today()).order_by(Shift.date, Shift.start_time)
+    q = select(Shift).join(Unit, Unit.id == Shift.center_id).where(Shift.date >= clock.today(), Unit.organization_id == user.organization_id).order_by(Shift.date, Shift.start_time)
     if user.role == rbac.MANAGER:
         q = q.where(Shift.center_id == await service.center_of(session, user.unit_id))
     items = []

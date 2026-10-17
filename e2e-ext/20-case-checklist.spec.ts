@@ -15,6 +15,7 @@ async function uiLogin(page: Page, role: 'Сотрудник' | 'Руковод�
   await page.goto('/login')
   await page.evaluate(() => { sessionStorage.clear(); localStorage.setItem('jana.lang.v1', 'ru') })
   await page.goto('/login')
+  await page.getByRole('button', { name: 'Демонстрационный вход', exact: true }).click()
   await page.locator('.role-option-content', { hasText: new RegExp(`^${role}`) }).click()
   await page.getByRole('button', { name: 'Войти в пространство' }).click()
   await expect(page.locator('.app-shell')).toBeVisible()

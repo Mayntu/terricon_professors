@@ -8,6 +8,9 @@ import { useDemoSession } from '@/features/identity/demo-context'
 import { getDemoRole } from '@/features/identity/demo-roles'
 import { plannedScreens, type PlannedScreen } from './routes'
 import { extElement } from '@/modules'
+import { apiEnabled } from '@/services/http/client'
+const AllRequestsPage = lazy(() => import('@/modules/ext-people/MyRequestsPage'))
+const AnyRequestPage = lazy(() => import('@/modules/ext-people/HrRequestPage'))
 
 const LoginPage = lazy(() => import('@/pages/login/LoginPage'))
 const AppShell = lazy(() => import('@/layouts/AppShell'))
@@ -36,10 +39,10 @@ function DemoScreen({ screen }: { screen: PlannedScreen }) {
     case 'dashboard': return <DashboardPage />
     case 'profile': return <ProfilePage />
     case 'leave-new': return <LeavePage />
-    case 'requests': return <RequestsPage />
-    case 'request': return <RequestDetailPage />
-    case 'approvals': return <RequestsPage manager />
-    case 'approval': return <RequestDetailPage manager />
+    case 'requests': return apiEnabled ? <AllRequestsPage /> : <RequestsPage />
+    case 'request': return apiEnabled ? <AnyRequestPage /> : <RequestDetailPage />
+    case 'approvals': return apiEnabled ? <AllRequestsPage manager /> : <RequestsPage manager />
+    case 'approval': return apiEnabled ? <AnyRequestPage /> : <RequestDetailPage manager />
     case 'notifications': return <NotificationsPage />
   }
   return extElement(screen.id) ?? <PlannedPage screen={screen} />
