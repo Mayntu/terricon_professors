@@ -16,3 +16,5 @@
 | 9 | `src/features/leave/components/DecisionPanel.tsx`, `src/features/leave/model.ts` | При отказе — `<RejectReason>` (причина из справочника), кнопка неактивна без причины и комментария от 10 символов; `reasonCode?` в `LeaveDecision` и в вызове `decide` | Гарантии: отказ только с причиной. В режиме моков поле не показывается и не требуется |
 | 10 | `src/layouts/AppShell.tsx` | `<ExtSlot name="shell.overlay" />` после мобильного меню | Плавающая демо-панель (показывается только при `DEMO_MODE`) |
 | 11 | `README.md` | Раздел «Полная сборка с бэкендом» в конце файла; его текст не тронут | Запуск с бэкендом, список ext-экранов, реализовано / смоделировано / развитие |
+| 12 | `vite.config.ts` | `server.watch.usePolling` при `VITE_USE_POLLING=true` (задано только в docker-compose) | В docker на macOS правки существующих файлов не доходили до Vite |
+| 13 | `tests/leave-flow.spec.ts` | Хелпер `login`: клик по видимому варианту роли вместо `check()` скрытого radio | Тест падал на 390 px из-за перекрытия подписью; поведение приложения верное (разрешено Даниилом) |

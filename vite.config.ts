@@ -6,6 +6,8 @@ import { defineConfig } from 'vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  // В docker на macOS события файлов не доходят до контейнера — опрос включается переменной из docker-compose
+  server: { watch: { usePolling: process.env.VITE_USE_POLLING === 'true' } },
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
