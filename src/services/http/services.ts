@@ -14,6 +14,15 @@ type ApiEvent = LeaveRequest['history'][number] & { readonly event?: string }
 type ApiLeave = Omit<LeaveRequest, 'history'> & { readonly history: readonly ApiEvent[] }
 const toLeave = (request: ApiLeave): LeaveRequest => ({ ...request, history: request.history.filter((item) => !item.event || STATUS_EVENTS.has(item.event)) })
 const mapOne = (result: ServiceResult<ApiLeave>): ServiceResult<LeaveRequest> => (result.ok ? { ok: true, data: toLeave(result.data) } : result)
+/** Уведомления ext-фич приходят со ссылкой (`link`) и без `target`. Компоненты напарника знают только
+ * request/course, поэтому цель выводится из ссылки, иначе — список заявок (не падать на null). */
+type ApiNotification = Omit<EmployeeNotification, 'target'> & { readonly target: EmployeeNotification['target'] | null; readonly link?: string | null }
+const toNotification = (n: ApiNotification): EmployeeNotification => {
+  if (n.target) return n as EmployeeNotification
+  const course = n.link?.match(/^\/academy\/(?:courses\/)?([^/?#]+)/)
+  const request = n.link?.match(/^\/requests\/([^/?#]+)/)
+  return { ...n, target: course?.[1] ? { kind: 'course', courseId: course[1] } : { kind: 'request', requestId: request?.[1] ?? '' } }
+}
 const mapPage = (result: ServiceResult<Page<ApiLeave>>): ServiceResult<Page<LeaveRequest>> => (result.ok ? { ok: true, data: { ...result.data, items: result.data.items.map(toLeave) } } : result)
 
 /** Реальные сервисы поверх API бэкенда (docs/API_CONTRACT.md). Те же контракты, что и у mock-адаптера. */
@@ -51,8 +60,14 @@ export function createHttpServices(session: DemoSessionStore): ApplicationServic
       decide: async (id, input, options) => mapOne(await api.post<ApiLeave>(`/leave/${encodeURIComponent(id)}/decision`, input, options)),
     },
     notifications: {
-      listMine: (options) => api.get<Page<EmployeeNotification>>('/notifications', options),
-      markRead: (id, options) => api.post<EmployeeNotification>(`/notifications/${encodeURIComponent(id)}/read`, undefined, options),
+      listMine: async (options) => {
+        const result = await api.get<Page<ApiNotification>>('/notifications', options)
+        return result.ok ? { ok: true, data: { ...result.data, items: result.data.items.map(toNotification) } } : result
+      },
+      markRead: async (id, options) => {
+        const result = await api.post<ApiNotification>(`/notifications/${encodeURIComponent(id)}/read`, undefined, options)
+        return result.ok ? { ok: true, data: toNotification(result.data) } : result
+      },
     },
   }
 }
