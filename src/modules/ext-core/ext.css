@@ -105,3 +105,6 @@ td .ext-badges { display: flex; margin: .35rem 0 0; }
 @media (min-width: 1024px) { .ext-ask { bottom: 0; } }
 .ext-bubble .eyebrow { display: block; margin-bottom: .35rem; }
 .ext-sources a { display: inline-flex; flex-wrap: wrap; gap: .25rem; align-items: center; }
+.ext-kb-editor { display: grid; gap: 1rem; margin-top: 1rem; grid-template-columns: 1fr 1fr; }
+.ext-kb-editor > p, .ext-kb-editor > .ext-actions { grid-column: 1 / -1; }
+@media (max-width: 900px) { .ext-kb-editor { grid-template-columns: 1fr; } }
