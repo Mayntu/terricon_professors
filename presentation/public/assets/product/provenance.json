@@ -1,0 +1,50 @@
+{
+  "source": "Running JanaМен React + FastAPI QA demo; fictitious employees. Only transient toast and demo controls hidden for screenshots. No content edited.",
+  "web": "http://localhost:15173",
+  "api": "http://localhost:18000",
+  "records": [
+    {
+      "file": "dashboard.png",
+      "route": "/dashboard",
+      "selector": ".app-shell",
+      "capturedAt": "2026-10-17T16:39:12.498Z"
+    },
+    {
+      "file": "leave-request.png",
+      "route": "/requests/422dab23-465b-41af-9bee-309d19968d2f",
+      "selector": ".route-frame[data-present=\"true\"]",
+      "capturedAt": "2026-10-17T16:39:15.755Z"
+    },
+    {
+      "file": "flow-map.png",
+      "route": "/requests/422dab23-465b-41af-9bee-309d19968d2f",
+      "selector": ".jana-flow-map",
+      "capturedAt": "2026-10-17T16:39:18.572Z"
+    },
+    {
+      "file": "academy.png",
+      "route": "/academy",
+      "selector": ".route-frame[data-present=\"true\"]",
+      "capturedAt": "2026-10-17T16:39:21.531Z"
+    },
+    {
+      "file": "ai-jana.png",
+      "route": "/ai-jana",
+      "question": "Сколько дней отпуска положено?",
+      "capturedAt": "2026-10-17T16:39:23.712Z"
+    },
+    {
+      "file": "manager-decision.png",
+      "route": "/requests/422dab23-465b-41af-9bee-309d19968d2f",
+      "selector": ".decision-panel",
+      "capturedAt": "2026-10-17T16:39:33.788Z"
+    },
+    {
+      "file": "approved.png",
+      "route": "/requests/559f0b0a-8a24-42cd-ab4a-00d2bc9c349b",
+      "selector": ".jana-flow-map",
+      "source": "http://localhost:15174",
+      "capturedAt": "2026-10-17T16:39:53.749Z"
+    }
+  ]
+}

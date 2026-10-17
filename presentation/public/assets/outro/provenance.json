@@ -1,0 +1,69 @@
+{
+  "recordedAt": "2026-10-17T17:07:36.558Z",
+  "source": "Isolated QA React/FastAPI/PostgreSQL; fictitious employees only",
+  "web": "http://localhost:15173",
+  "api": "http://localhost:18000",
+  "requestId": "e25cbb4c-bd32-43a3-b4a0-def9d97c585a",
+  "dates": {
+    "start": "2027-08-13",
+    "end": "2027-08-14"
+  },
+  "workflow": "One real new two-day leave, submitted by aigerim and approved by erlan. No reset or time advance. Academy is a previously completed course. Original document, no translation.",
+  "records": [
+    {
+      "file": "leave-empty.png",
+      "url": "http://localhost:15173/requests/new/leave",
+      "selector": ".business-page",
+      "capturedAt": "2026-10-17T17:07:20.462Z"
+    },
+    {
+      "file": "leave-filled.png",
+      "url": "http://localhost:15173/requests/new/leave",
+      "selector": ".business-page",
+      "capturedAt": "2026-10-17T17:07:20.811Z"
+    },
+    {
+      "file": "leave-confirm.png",
+      "url": "http://localhost:15173/requests/new/leave",
+      "selector": "dialog",
+      "capturedAt": "2026-10-17T17:07:21.176Z"
+    },
+    {
+      "file": "flow-submitted.png",
+      "url": "http://localhost:15173/requests/e25cbb4c-bd32-43a3-b4a0-def9d97c585a?created=1",
+      "selector": ".jana-flow-map",
+      "capturedAt": "2026-10-17T17:07:22.358Z"
+    },
+    {
+      "file": "manager-confirm.png",
+      "url": "http://localhost:15173/requests/e25cbb4c-bd32-43a3-b4a0-def9d97c585a",
+      "selector": ".decision-panel",
+      "capturedAt": "2026-10-17T17:07:25.765Z"
+    },
+    {
+      "file": "flow-approved.png",
+      "url": "http://localhost:15173/requests/e25cbb4c-bd32-43a3-b4a0-def9d97c585a",
+      "selector": ".jana-flow-map",
+      "capturedAt": "2026-10-17T17:07:26.233Z"
+    },
+    {
+      "file": "academy-completed.png",
+      "url": "http://localhost:15173/academy/course-safety/result",
+      "selector": ".route-frame[data-present=\"true\"]",
+      "capturedAt": "2026-10-17T17:07:34.182Z"
+    },
+    {
+      "file": "ai-answer.png",
+      "url": "http://localhost:15173/ai-jana",
+      "selector": "[data-testid=\"ai-answer\"]",
+      "capturedAt": "2026-10-17T17:07:36.205Z"
+    },
+    {
+      "file": "ai-source.png",
+      "url": "http://localhost:15173/knowledge/kb-kz-vacation#section-1",
+      "selector": ".route-frame[data-present=\"true\"]",
+      "capturedAt": "2026-10-17T17:10:31.387117+00:00",
+      "note": "Recaptured after source-body loaded; timestamp is PNG modification time."
+    }
+  ]
+}
