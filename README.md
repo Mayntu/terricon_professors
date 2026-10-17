@@ -1,5 +1,17 @@
 # JanaМен · JANA FLOW
 
+> **Запуск полной платформы (бэкенд + фронтенд + БД) — одна команда.** Нужен Docker с Compose 2.24+.
+>
+> ```sh
+> docker compose up
+> ```
+>
+> Через 1–2 минуты: приложение — http://localhost:5173, API — http://localhost:8000/docs.
+> Вход — кнопка **DEMO** справа внизу (8 персонажей), подробности и учётки — в разделе
+> [«Полная сборка с бэкендом»](#полная-сборка-с-бэкендом-janaмен) и в [`backend/README.md`](backend/README.md).
+> Порт занят — `DB_PORT=5433 API_PORT=8001 WEB_PORT=5174 docker compose up`.
+> Ниже — исходное описание фронтенда; команды `npm run dev` без Docker запускают его **на mock-данных**.
+
 Frontend внутренней HR-платформы. Этап 04: **JANA MOTION / SIGNAL & FLOW**.
 Рабочий сценарий отпуска сохранён:
 Employee → заявка → решение Manager → история и уведомление Employee.
