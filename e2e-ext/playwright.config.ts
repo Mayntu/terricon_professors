@@ -10,5 +10,12 @@ export default defineConfig({
   workers: 1,
   reporter: [['list']],
   use: { baseURL: process.env.EXT_BASE_URL ?? 'http://localhost:5173', trace: 'retain-on-failure', ...(process.env.PLAYWRIGHT_CHANNEL ? { channel: process.env.PLAYWRIGHT_CHANNEL } : {}) },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'], ...(process.env.PLAYWRIGHT_CHANNEL ? { channel: process.env.PLAYWRIGHT_CHANNEL } : { channel: undefined }) } }],
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'], ...(process.env.PLAYWRIGHT_CHANNEL ? { channel: process.env.PLAYWRIGHT_CHANNEL } : { channel: undefined }) } },
+    // Кросс-браузерный прогон главного сценария (нужны `npx playwright install firefox webkit`): QA_BROWSERS=1 … --project=firefox
+    ...(process.env.QA_BROWSERS ? [
+      { name: 'firefox', use: { ...devices['Desktop Firefox'] }, testMatch: /99-demo-scenario|20-case-checklist/ },
+      { name: 'webkit', use: { ...devices['Desktop Safari'] }, testMatch: /99-demo-scenario|20-case-checklist/ },
+    ] : []),
+  ],
 })

@@ -50,7 +50,7 @@ test('чек-лист кейса 12.1 через интерфейс', async ({ p
   await test.step('профиль: все поля кейса', async () => {
     await loginAs(page, 'aigerim', '/profile')
     const main = page.locator('main')
-    for (const text of ['Айгерим Сейткали', 'Jana Post', 'Сортировщик', 'СЦ Алматы · смена Б', 'Ерлан Мухамедов', '3 июн. 2024', '14 календ. дн.', 'Назначенное обучение', 'Техника безопасности на сортировке']) await expect(main).toContainText(text)
+    for (const text of <(string | RegExp)[]>['Айгерим Сейткали', 'Jana Post', 'Сортировщик', 'СЦ Алматы · смена Б', 'Ерлан Мухамедов', /3 июн[.я]* 2024/, '14 календ. дн.', 'Назначенное обучение', 'Техника безопасности на сортировке']) await expect(main).toContainText(text)
     await expect(page.locator('.notification-count')).toContainText('2')
     await step(page, 'profile')
   })
