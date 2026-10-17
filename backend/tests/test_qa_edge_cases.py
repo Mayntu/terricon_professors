@@ -192,3 +192,42 @@ async def test_filters_survive_sqlish_input(client, login, value):
     assert r.status_code in (200, 422)
     # Сохранилось ли всё на месте
     assert len((await client.get("/api/requests/all", headers=hd)).json()["items"]) == 8
+
+
+# ---------- QA-05: NUL-байт во вводе — 422, а не 500 (Postgres не хранит \x00) ----------
+
+
+@pytest.mark.parametrize(
+    ("method", "path", "body"),
+    [
+        ("get", "/api/employees/%00", None),
+        ("get", "/api/requests/abc%00", None),
+        ("get", "/api/requests/all?type=%00", None),
+        ("post", "/api/ai/ask", {"question": "отпуск \x00 сколько"}),
+        ("post", "/api/ext/grievances", {"category": "other", "text": "текст с \x00 байтом", "anonymous": False}),
+        ("post", "/api/hr-questions", {"question": "вопрос \x00"}),
+    ],
+)
+async def test_nul_byte_rejected_with_validation(client, login, method, path, body):
+    h = await login("aigerim")
+    r = await (client.get(path, headers=h) if method == "get" else client.post(path, headers=h, json=body))
+    assert r.status_code == 422, r.text
+    assert r.json()["code"] == "VALIDATION"
+
+
+# ---------- QA-08: длинные/несуществующие значения в полях с ограничением — 422/404, а не 500 ----------
+
+
+async def test_long_reason_code_on_approve_rejected(client, login):
+    he = await login("erlan")
+    rid = (await client.get("/api/leave/pending", headers=he)).json()["items"][0]["id"]
+    r = await client.post(f"/api/requests/{rid}/decide", headers=he, json={"decision": "Approved", "reasonCode": "X" * 200})
+    assert r.status_code == 422 and r.json()["code"] == "VALIDATION"
+
+
+@pytest.mark.parametrize("center", ["c" * 500, "no-such-center"])
+async def test_shift_publish_unknown_center(client, login, center):
+    h = await login("daniyar")
+    day = (clock.today() + timedelta(days=5)).isoformat()
+    r = await client.post("/api/ext/shifts", headers=h, json={"centerId": center, "date": day, "startTime": "08:00", "endTime": "20:00", "payPreview": 10000})
+    assert r.status_code in (404, 422), r.text

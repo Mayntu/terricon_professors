@@ -281,6 +281,16 @@ async def main() -> None:
         r = await c.options("/leave/requests", headers={"Origin": "http://evil.example", "Access-Control-Request-Method": "POST"})
         check(r.headers.get("access-control-allow-origin") is None, "CORS rejects foreign origin")
 
+        # --- QA-05: NUL-байт — 422, а не 500 (Postgres не хранит \x00)
+        for name, req in [
+            ("path", c.get("/employees/%00", headers=H["aigerim"])),
+            ("query", c.get("/requests/my?type=%00", headers=H["aigerim"])),
+            ("AI question", c.post("/ai/ask", headers=H["aigerim"], json={"question": "отпуск \x00"})),
+            ("grievance text", c.post("/ext/grievances", headers=H["aigerim"], json={"category": "other", "text": "текст \x00 байт", "anonymous": False})),
+        ]:
+            r = await req
+            check(r.status_code == 422 and r.json().get("code") == "VALIDATION", f"NUL in {name} -> 422", r.status_code)
+
     failed = [n for ok, n in results if not ok]
     print(f"\n{len(results) - len(failed)}/{len(results)} passed")
     if failed:

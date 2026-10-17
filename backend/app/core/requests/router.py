@@ -4,6 +4,7 @@ from datetime import date
 from typing import Literal
 
 from fastapi import APIRouter, Depends, Query
+from pydantic import Field
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import rbac
@@ -22,8 +23,8 @@ router = APIRouter(prefix="/api/requests", tags=["requests"])
 class DecideIn(ApiModel):
     decision: Literal["Approved", "Rejected"]
     expected_version: int | None = None
-    reason_code: str | None = None
-    comment: str | None = None
+    reason_code: str | None = Field(default=None, max_length=64)
+    comment: str | None = Field(default=None, max_length=2000)
 
 
 class RequestTypeOut(ApiModel):
