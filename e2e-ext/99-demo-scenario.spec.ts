@@ -1,3 +1,4 @@
+import { appendFileSync } from 'node:fs'
 import { expect, test, type Page } from '@playwright/test'
 import { API, loginAs, resetDemo } from './helpers'
 
@@ -12,10 +13,14 @@ async function ask(page: Page, q: string) {
 
 test('демо §12 целиком', async ({ page }) => {
   const errors: string[] = []
+  const timings: Record<string, number> = {}
+  const slow: string[] = []
+  page.on('requestfinished', (r) => { const t = r.timing(); const ms = t.responseEnd; if (ms > 1000 && r.url().includes('/api/')) slow.push(`${Math.round(ms)}ms ${r.method()} ${new URL(r.url()).pathname}`) })
+  const timed = async (name: string, body: () => Promise<void>) => { const t0 = Date.now(); await test.step(name, body); timings[name] = Date.now() - t0 }
   page.on('pageerror', (e) => errors.push(`${page.url()}: ${e.message}`))
   await resetDemo(page)
 
-  await test.step('1. Айгерим: главная и лестница в профиле', async () => {
+  await timed('1. Айгерим: главная и лестница в профиле', async () => {
     await loginAs(page, 'aigerim')
     await expect(page.getByTestId('wage-widget').getByTestId('wage-available')).toHaveText('84 000 ₸')
     await expect(page.getByRole('heading', { name: 'Мои гарантии' })).toBeVisible()
@@ -24,7 +29,7 @@ test('демо §12 целиком', async ({ page }) => {
     await expect(page.getByTestId('ladder-remaining')).toContainText('Осталось: 1 курс → +35 000 ₸')
   })
 
-  await test.step('2. «Зарплата по факту» 60 000 ₸ → заявка «одобрено системой»', async () => {
+  await timed('2. «Зарплата по факту» 60 000 ₸ → заявка «одобрено системой»', async () => {
     await page.goto('/dashboard')
     await page.getByTestId('wage-widget').getByRole('link', { name: 'Получить' }).click()
     await page.getByLabel('Сумма').fill('60000')
@@ -33,7 +38,7 @@ test('демо §12 целиком', async ({ page }) => {
     await expect(page.getByTestId('wage-sent')).toContainText('Деньги отправлены')
   })
 
-  await test.step('3. Ерлан: отказ без причины невозможен; чужая смена — 403', async () => {
+  await timed('3. Ерлан: отказ без причины невозможен; чужая смена — 403', async () => {
     await loginAs(page, 'erlan', '/manager/approvals')
     await page.locator('.request-number').first().click()
     await page.getByRole('radio', { name: 'Отклонить' }).check({ force: true })
@@ -46,13 +51,13 @@ test('демо §12 целиком', async ({ page }) => {
     expect((await page.request.get(`${API}/api/employees/emp-asel`, { headers })).status()).toBe(403)
   })
 
-  await test.step('4. «+2 дня» → отпуск «Одобрено по сроку»', async () => {
+  await timed('4. «+2 дня» → отпуск «Одобрено по сроку»', async () => {
     await page.request.post(`${API}/api/demo/advance-time`, { data: { hours: 48 } })
     await loginAs(page, 'aigerim', '/requests')
     await expect(page.getByTestId('guarantee-badge').filter({ hasText: 'Одобрено по сроку' }).first()).toBeVisible()
   })
 
-  await test.step('5. Айгерим проходит курс → «все условия выполнены»', async () => {
+  await timed('5. Айгерим проходит курс → «все условия выполнены»', async () => {
     await page.goto('/profile')
     await page.getByTestId('ladder').getByRole('link', { name: 'Перейти к курсу' }).click()
     await page.getByTestId('course-lessons').getByRole('link', { name: 'Продолжить' }).click()
@@ -65,7 +70,7 @@ test('демо §12 целиком', async ({ page }) => {
     await expect(page.getByTestId('ladder-remaining')).toContainText('Все условия выполнены')
   })
 
-  await test.step('6. AI Jana: KZ/KG источники, отказ, «нет информации» → «Спросить HR»', async () => {
+  await timed('6. AI Jana: KZ/KG источники, отказ, «нет информации» → «Спросить HR»', async () => {
     await page.goto('/ai-jana')
     await expect(await ask(page, 'Сколько дней отпуска положено?')).toContainText('ТК РК')
     await expect(await ask(page, 'Какая зарплата у моего начальника?')).toContainText('Защита данных')
@@ -77,7 +82,7 @@ test('демо §12 целиком', async ({ page }) => {
     await expect(await ask(page, 'Сколько дней отпуска положено?')).toContainText('ТК КР')
   })
 
-  await test.step('7. Данияр: радар → пересмотр → «остался» = 10,8 млн ₸', async () => {
+  await timed('7. Данияр: радар → пересмотр → «остался» = 10,8 млн ₸', async () => {
     await loginAs(page, 'daniyar', '/hr')
     await expect(page.getByTestId('hr-savings')).toContainText('9 900 000 ₸')
     await expect(page.locator('.ext-risk[data-employee="emp-nurlan"]')).toBeVisible()
@@ -89,7 +94,7 @@ test('демо §12 целиком', async ({ page }) => {
     await expect(page.getByTestId('hr-savings')).toContainText('10 800 000 ₸')
   })
 
-  await test.step('8. Рентген: Ерлан наверху; пробелы базы → публикация → AI отвечает', async () => {
+  await timed('8. Рентген: Ерлан наверху; пробелы базы → публикация → AI отвечает', async () => {
     await page.getByRole('radio', { name: 'Рентген' }).check({ force: true })
     await expect(page.getByTestId('xray-table').locator('tbody tr').first()).toContainText('Ерлан')
     await page.goto('/hr/knowledge')
@@ -102,7 +107,7 @@ test('демо §12 целиком', async ({ page }) => {
     await expect(await ask(page, 'Как оплачиваются ночные смены?')).toContainText('Внутреннее правило')
   })
 
-  await test.step('9. Биржа смен: Айгерим отдаёт, Асель берёт', async () => {
+  await timed('9. Биржа смен: Айгерим отдаёт, Асель берёт', async () => {
     await page.goto('/shifts')
     await page.getByTestId('shifts-mine').locator('li').first().getByRole('button', { name: 'Отдать смену' }).click()
     await expect(page.getByTestId('shifts-mine').locator('li').first()).toContainText('Выставлена на биржу')
@@ -113,5 +118,6 @@ test('демо §12 целиком', async ({ page }) => {
     await expect(page.getByTestId('shifts-available').locator('li').filter({ hasText: 'Айгерим' })).toHaveCount(0)
   })
 
+  if (process.env.DEMO_TIMINGS) appendFileSync(process.env.DEMO_TIMINGS, JSON.stringify({ timings, slow }) + '\n')
   expect(errors, 'ошибки на странице').toEqual([])
 })

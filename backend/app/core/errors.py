@@ -94,6 +94,9 @@ def install_error_handlers(app: FastAPI) -> None:
         if "deadlock" in str(exc.orig).lower() or "could not serialize" in str(exc.orig).lower():
             body = AppError("conflict", "CONFLICT", "Параллельное изменение, повторите действие").to_body()
             return JSONResponse(body, status_code=409)
+        # Страховка (QA-05/07/08): ввод, который БД не принимает, — ошибка клиента, а не 500
+        if any(m in str(exc.orig).lower() for m in ("value too long", "invalid byte sequence", "invalid input syntax")):
+            return JSONResponse(AppError("validation", "VALIDATION", "Проверьте введённые данные").to_body(), status_code=422)
         raise exc
 
     @app.exception_handler(StarletteHTTPException)

@@ -17,6 +17,7 @@ from app.core.demo.router import router as demo_router
 from app.core.demo.service import load_offset
 from app.core.errors import install_error_handlers
 from app.core.events import events
+from app.core.input_guard import NulGuardMiddleware
 from app.core.modules import ModuleContext, import_all_models, load_modules
 from app.core.notifications.router import router as notifications_router
 from app.core.profile import profile_registry
@@ -86,6 +87,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     app = FastAPI(title="JanaМен API", version="0.1.0", lifespan=lifespan)
     app.state.settings = settings
+    app.add_middleware(NulGuardMiddleware)  # добавлен раньше CORS → внутри него: отказ 422 тоже с CORS-заголовками
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origin_list,

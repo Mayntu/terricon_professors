@@ -25,6 +25,14 @@ def cosine(a: dict[str, float], b: dict[str, float]) -> float:
     return sum(v * b.get(t, 0.0) for t, v in a.items())
 
 
+LABEL_MAX = 300  # ext_kb_gap_groups.label — varchar(300); вопрос может быть до 1000 символов (QA-07)
+
+
+def short_label(question: str) -> str:
+    text = " ".join(question.split())
+    return text if len(text) <= LABEL_MAX else text[: LABEL_MAX - 1].rstrip() + "…"
+
+
 async def assign(session: AsyncSession, question: ai.KbQuestion) -> KbGapGroup:
     """Отнести вопрос к самой близкой группе страны или открыть новую.
 
@@ -63,7 +71,7 @@ async def assign(session: AsyncSession, question: ai.KbQuestion) -> KbGapGroup:
 
     if best is None or best_score < THRESHOLD:
         best = KbGapGroup(
-            id=new_id(), country=question.country, label=question.question, question_count=0,
+            id=new_id(), country=question.country, label=short_label(question.question), question_count=0,
             created_at=question.asked_at, last_asked_at=question.asked_at,
         )
         session.add(best)

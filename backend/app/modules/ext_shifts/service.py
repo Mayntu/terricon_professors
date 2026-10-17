@@ -126,6 +126,9 @@ async def publish_open(
         time.fromisoformat(start), time.fromisoformat(end)
     except ValueError:
         raise AppError("validation", "INVALID_TIME", "Время в формате ЧЧ:ММ", {"startTime": ["ЧЧ:ММ"]}) from None
+    center = await session.get(Unit, center_id) if len(center_id) <= 64 else None
+    if center is None or center.parent_id is not None:
+        raise not_found("Центр не найден")
     s = Shift(
         id=new_id(), center_id=center_id, date=day, start_time=start, end_time=end,
         qualification=qualification, status="open", pay_preview=pay_preview, published_by=actor.id,

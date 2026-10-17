@@ -58,3 +58,16 @@ async def test_draft_edit_publish_then_ai_answers(client, login):
 async def test_hr_only(client, login):
     for who in ("aigerim", "erlan"):
         assert (await client.get("/api/ext/kb/gaps", headers=await login(who))).status_code == 403
+
+
+async def test_long_unanswered_question_fits_gap_label(client, login):
+    """QA-07: вопрос до 1000 символов без ответа не роняет запрос — метка группы ≤ 300 (varchar в Postgres)."""
+    h, hr = await login("aigerim"), await login("daniyar")
+    q = "Вопрос про компенсацию аренды жилья для иногородних " + "оченьдлинноеслово" * 60
+    r = await client.post("/api/ai/ask", headers=h, json={"question": q[:1000]})
+    assert r.status_code == 200 and r.json()["answered"] is False
+    gaps = (await client.get("/api/ext/kb/gaps?country=KZ", headers=hr)).json()
+    assert gaps and all(len(g["label"]) <= 300 for g in gaps)
+    g = next(x for x in gaps if x["label"].startswith("Вопрос про компенсацию"))
+    assert g["label"].endswith("…")
+    assert (await client.post(f"/api/ext/kb/gaps/{g['id']}/draft", headers=hr)).status_code in (200, 201)
