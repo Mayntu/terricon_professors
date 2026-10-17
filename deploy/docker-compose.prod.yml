@@ -1,0 +1,50 @@
+# Сервер: docker compose -p janamen -f deploy/docker-compose.prod.yml --env-file .env up -d --build
+# Наружу ничего не публикуется: общий Caddy сервера проксирует
+#   https://$PUBLIC_HOST/api/* → backend:8000,  остальное → frontend:80   (см. deploy/README.md)
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: janamen
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-janamen}
+      POSTGRES_DB: janamen
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U janamen"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  backend:
+    build: ../backend
+    restart: unless-stopped
+    env_file:
+      - path: ../.env
+        required: false
+    environment:
+      DATABASE_URL: postgresql+asyncpg://janamen:${POSTGRES_PASSWORD:-janamen}@db:5432/janamen
+      CORS_ORIGINS: https://${PUBLIC_HOST:?PUBLIC_HOST не задан}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: deploy/frontend.Dockerfile
+      args:
+        VITE_API_URL: https://${PUBLIC_HOST}
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  db-data:

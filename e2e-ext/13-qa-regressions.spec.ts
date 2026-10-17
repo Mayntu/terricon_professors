@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { loginAs, resetDemo } from './helpers'
+import { API, loginAs, resetDemo } from './helpers'
 
 /** Регрессии, найденные при финальной проверке (docs/FINAL_QA.md). Каждый тест сначала ловил баг. */
 test.beforeEach(async ({ page }) => { await resetDemo(page) })
@@ -28,7 +28,11 @@ test('QA-03: в профиле есть назначенное обучение 
   await expect(block).toContainText('Пройден')
   await expect(block).toContainText('Техника безопасности на сортировке')
   await expect(block).toContainText('25%')
-  await expect(block).toContainText('30 окт')
+  // срок в seed относительный (от «сегодня»), поэтому сверяем с API, а не с зашитой датой
+  const t = (await (await page.request.post(`${API}/api/demo/login-as`, { data: { login: 'aigerim' } })).json()).accessToken
+  const me = await (await page.request.get(`${API}/api/profile/me`, { headers: { Authorization: `Bearer ${t}` } })).json()
+  const due = me.assignedTraining.find((c: { courseId: string }) => c.courseId === 'course-safety').dueDate as string
+  await expect(block).toContainText(new RegExp(`До ${Number(due.slice(8, 10))} \\S+|до ${Number(due.slice(8, 10))} \\S+`))
 })
 
 test('QA-09: кнопка DEMO оформлена на любой странице, даже без других ext-блоков', async ({ page }) => {
