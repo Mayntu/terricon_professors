@@ -119,3 +119,5 @@ td .ext-badges { display: flex; margin: .35rem 0 0; }
 .ext-demo-personas small { color: var(--text-secondary, #5b655f); font-size: .72rem; }
 .ext-demo-actions { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; }
 .ext-demo-actions button { text-align: center; font-weight: 600; }
+.ext-filters { display: flex; flex-wrap: wrap; gap: .75rem; max-width: none; margin: 0; }
+.ext-filters label { flex: 1 1 10rem; }

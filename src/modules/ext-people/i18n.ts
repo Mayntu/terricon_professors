@@ -1,0 +1,36 @@
+import { registerDictionary } from '../ext-core/i18n'
+
+registerDictionary(
+  {
+    'pp.team.title': 'Моя команда', 'pp.team.index': 'КОМАНДА', 'pp.team.lead': 'Люди, которыми вы руководите: должность, остаток отпуска, обучение. Зарплаты здесь не показываются, сотрудники других команд недоступны.',
+    'pp.emp.title': 'Сотрудники', 'pp.emp.index': 'HR / СОТРУДНИКИ', 'pp.emp.lead': 'Все сотрудники компании. Официальные кадровые данные только для чтения — источник 1С:ЗУП.',
+    'pp.col.name': 'Сотрудник', 'pp.col.position': 'Должность', 'pp.col.unit': 'Подразделение', 'pp.col.leave': 'Отпуск', 'pp.col.training': 'Обучение', 'pp.col.salary': 'Оклад',
+    'pp.days': '{n} дн.', 'pp.pending': '+{n} на согласовании', 'pp.courses': '{done} из {total} курсов', 'pp.noCourses': 'не назначено', 'pp.open': 'Открыть профиль',
+    'pp.all': 'Все страны', 'pp.empty': 'Сотрудников нет', 'pp.search': 'Поиск по имени',
+    'pp.profile.index': 'ПРОФИЛЬ СОТРУДНИКА', 'pp.profile.back': 'Назад', 'pp.forbidden.title': 'Нет доступа', 'pp.forbidden.text': 'Этот сотрудник не из вашей команды. Профили других команд видят только их руководитель и HR.',
+    'pp.f.company': 'Компания', 'pp.f.position': 'Должность', 'pp.f.unit': 'Подразделение', 'pp.f.manager': 'Руководитель', 'pp.f.hired': 'Дата приёма', 'pp.f.leave': 'Остаток отпуска', 'pp.f.grade': 'Грейд', 'pp.f.salary': 'Оклад (1С:ЗУП)', 'pp.f.country': 'Страна',
+    'pp.training': 'Назначенное обучение', 'pp.readonly': 'Данные из 1С:ЗУП, изменяются только кадровыми документами.',
+    'pp.req.title': 'Реестр заявок', 'pp.req.index': 'HR / РЕЕСТР', 'pp.req.lead': 'Все заявки компании: тип, автор, статус, срок. Автор анонимных обращений не показывается.',
+    'pp.req.type': 'Тип', 'pp.req.status': 'Статус', 'pp.req.country': 'Страна', 'pp.req.any': 'Все', 'pp.req.number': 'Номер', 'pp.req.author': 'Автор', 'pp.req.created': 'Создана', 'pp.req.empty': 'Заявок по фильтру нет',
+    'pp.req.anonymous': 'Анонимно', 'pp.req.history': 'История', 'pp.req.documents': 'Документы', 'pp.req.payload': 'Содержание', 'pp.req.approver': 'Решает', 'pp.req.decision': 'Решение', 'pp.req.system': 'система',
+    'pp.pl.startDate': 'Начало', 'pp.pl.endDate': 'Окончание', 'pp.pl.days': 'Дней', 'pp.pl.amount': 'Сумма', 'pp.pl.period': 'Период', 'pp.pl.category': 'Тема', 'pp.pl.question': 'Вопрос', 'pp.pl.text': 'Текст', 'pp.pl.comment': 'Комментарий',
+    'pp.ev.created': 'создал(а) заявку', 'pp.ev.approved': 'согласовал(а)', 'pp.ev.rejected': 'отклонил(а)', 'pp.ev.escalated': 'передано HR', 'pp.ev.cancelled': 'отменил(а)', 'pp.ev.deadline_set': 'срок ответа назначен', 'pp.ev.deadline_missed': 'срок ответа истёк', 'pp.ev.auto_approved': 'одобрено по сроку', 'pp.ev.document_registered': 'документ оформлен в Documentolog', 'pp.ev.payout_sent': 'выплата отправлена', 'pp.ev.note': 'отметка',
+    'pp.st.Submitted': 'На согласовании', 'pp.st.Approved': 'Согласовано', 'pp.st.Rejected': 'Отклонено', 'pp.st.Escalated': 'Передано HR', 'pp.st.Cancelled': 'Отменено',
+  },
+  {
+    'pp.team.title': 'Менің командам', 'pp.team.index': 'КОМАНДА', 'pp.team.lead': 'Сіз басқаратын адамдар: лауазым, демалыс қалдығы, оқу. Жалақы көрсетілмейді, басқа командалар қолжетімсіз.',
+    'pp.emp.title': 'Қызметкерлер', 'pp.emp.index': 'HR / ҚЫЗМЕТКЕРЛЕР', 'pp.emp.lead': 'Компанияның барлық қызметкерлері. Ресми кадрлық деректер тек оқу үшін — дереккөз 1С:ЗУП.',
+    'pp.col.name': 'Қызметкер', 'pp.col.position': 'Лауазым', 'pp.col.unit': 'Бөлімше', 'pp.col.leave': 'Демалыс', 'pp.col.training': 'Оқу', 'pp.col.salary': 'Жалақы',
+    'pp.days': '{n} күн', 'pp.pending': '+{n} келісуде', 'pp.courses': '{total} курстың {done}', 'pp.noCourses': 'тағайындалмаған', 'pp.open': 'Профильді ашу',
+    'pp.all': 'Барлық елдер', 'pp.empty': 'Қызметкерлер жоқ', 'pp.search': 'Аты бойынша іздеу',
+    'pp.profile.index': 'ҚЫЗМЕТКЕР ПРОФИЛІ', 'pp.profile.back': 'Артқа', 'pp.forbidden.title': 'Қолжетімсіз', 'pp.forbidden.text': 'Бұл қызметкер сіздің командаңыздан емес. Басқа командалардың профилін тек олардың басшысы мен HR көреді.',
+    'pp.f.company': 'Компания', 'pp.f.position': 'Лауазым', 'pp.f.unit': 'Бөлімше', 'pp.f.manager': 'Басшы', 'pp.f.hired': 'Қабылданған күні', 'pp.f.leave': 'Демалыс қалдығы', 'pp.f.grade': 'Грейд', 'pp.f.salary': 'Жалақы (1С:ЗУП)', 'pp.f.country': 'Ел',
+    'pp.training': 'Тағайындалған оқу', 'pp.readonly': '1С:ЗУП деректері, тек кадрлық құжаттармен өзгереді.',
+    'pp.req.title': 'Өтінімдер тізілімі', 'pp.req.index': 'HR / ТІЗІЛІМ', 'pp.req.lead': 'Компанияның барлық өтінімдері: түрі, авторы, мәртебесі, мерзімі. Анонимді шағым авторы көрсетілмейді.',
+    'pp.req.type': 'Түрі', 'pp.req.status': 'Мәртебе', 'pp.req.country': 'Ел', 'pp.req.any': 'Барлығы', 'pp.req.number': 'Нөмір', 'pp.req.author': 'Автор', 'pp.req.created': 'Құрылды', 'pp.req.empty': 'Сүзгі бойынша өтінім жоқ',
+    'pp.req.anonymous': 'Анонимді', 'pp.req.history': 'Тарих', 'pp.req.documents': 'Құжаттар', 'pp.req.payload': 'Мазмұны', 'pp.req.approver': 'Шешеді', 'pp.req.decision': 'Шешім', 'pp.req.system': 'жүйе',
+    'pp.pl.startDate': 'Басы', 'pp.pl.endDate': 'Соңы', 'pp.pl.days': 'Күн', 'pp.pl.amount': 'Сома', 'pp.pl.period': 'Кезең', 'pp.pl.category': 'Тақырып', 'pp.pl.question': 'Сұрақ', 'pp.pl.text': 'Мәтін', 'pp.pl.comment': 'Пікір',
+    'pp.ev.created': 'өтінім жасады', 'pp.ev.approved': 'келісті', 'pp.ev.rejected': 'қабылдамады', 'pp.ev.escalated': 'HR-ға берілді', 'pp.ev.cancelled': 'тоқтатты', 'pp.ev.deadline_set': 'жауап мерзімі белгіленді', 'pp.ev.deadline_missed': 'жауап мерзімі өтті', 'pp.ev.auto_approved': 'мерзім бойынша мақұлданды', 'pp.ev.document_registered': 'құжат Documentolog-та рәсімделді', 'pp.ev.payout_sent': 'төлем жіберілді', 'pp.ev.note': 'белгі',
+    'pp.st.Submitted': 'Келісуде', 'pp.st.Approved': 'Келісілді', 'pp.st.Rejected': 'Қабылданбады', 'pp.st.Escalated': 'HR-ға берілді', 'pp.st.Cancelled': 'Тоқтатылды',
+  },
+)

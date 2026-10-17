@@ -18,3 +18,18 @@
 | 11 | `README.md` | Раздел «Полная сборка с бэкендом» в конце файла; его текст не тронут | Запуск с бэкендом, список ext-экранов, реализовано / смоделировано / развитие |
 | 12 | `vite.config.ts` | `server.watch.usePolling` при `VITE_USE_POLLING=true` (задано только в docker-compose) | В docker на macOS правки существующих файлов не доходили до Vite |
 | 13 | `tests/leave-flow.spec.ts` | Хелпер `login`: клик по видимому варианту роли вместо `check()` скрытого radio | Тест падал на 390 px из-за перекрытия подписью; поведение приложения верное (разрешено Даниилом) |
+
+## Для напарника: какие заглушки заняты ext-экранами
+
+Экраны подменяются по id из `src/app/routes.ts` через реестр `src/modules/index.ts`, файлы напарника для этого не правятся.
+Если будешь делать свой экран с тем же id — убери соответствующую строку из модуля, и заглушка снова станет твоей.
+
+| id заглушки | Путь | Чей экран сейчас | Модуль |
+|---|---|---|---|
+| `academy`, `course`, `lesson`, `result` | `/academy…` | Даниила | `src/modules/academy` |
+| `assistant`, `source` | `/ai-jana`, `/knowledge/:id` | Даниила | `src/modules/ai-jana` |
+| `hr` | `/hr` | Даниила (HR-пульт) | `src/modules/ext-hr` |
+| `hr-learning` | `/hr/learning` | Даниила | `src/modules/academy` |
+| `hr-knowledge` | `/hr/knowledge` | Даниила (пробелы базы) | `src/modules/ext-kb-gaps` |
+| `team` | `/manager/team` | Даниила (сценарий 3 кейса) | `src/modules/ext-people` |
+| `hr-employees`, `hr-requests`, `hr-request` | `/hr/employees`, `/hr/requests…` | Даниила | `src/modules/ext-people` |
