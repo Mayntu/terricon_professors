@@ -2,6 +2,7 @@ import { registerDictionary } from '../ext-core/i18n'
 
 registerDictionary(
   {
+    'ac.profile.title': 'Назначенное обучение', 'ac.profile.none': 'Курсы пока не назначены',
     'ac.title': 'Jana Academy', 'ac.index': '03 / ОБУЧЕНИЕ', 'ac.lead': 'Назначенные курсы, материалы и проверка знаний. Пройденный курс — шаг к следующему грейду.',
     'ac.assigned': 'Мои курсы', 'ac.catalog': 'Каталог', 'ac.due': 'Пройти до {date}', 'ac.min': '{n} мин', 'ac.lessons': 'Уроки: {done} из {total}',
     'ac.status.Assigned': 'Назначен', 'ac.status.InProgress': 'В процессе', 'ac.status.Completed': 'Пройден', 'ac.score': 'Результат {n}%',
@@ -14,6 +15,7 @@ registerDictionary(
     'ac.hr.course': 'Курс', 'ac.hr.due': 'Срок (необязательно)', 'ac.hr.assigned': 'Курс назначен, сотрудник получил уведомление', 'ac.hr.progress': 'Прогресс',
   },
   {
+    'ac.profile.title': 'Тағайындалған оқу', 'ac.profile.none': 'Курстар әлі тағайындалмаған',
     'ac.title': 'Jana Academy', 'ac.index': '03 / ОҚУ', 'ac.lead': 'Тағайындалған курстар, материалдар және білімді тексеру. Өткен курс — келесі грейдке қадам.',
     'ac.assigned': 'Менің курстарым', 'ac.catalog': 'Каталог', 'ac.due': '{date} дейін өту', 'ac.min': '{n} мин', 'ac.lessons': 'Сабақтар: {total} ішінен {done}',
     'ac.status.Assigned': 'Тағайындалды', 'ac.status.InProgress': 'Үдерісте', 'ac.status.Completed': 'Өтті', 'ac.score': 'Нәтиже {n}%',
