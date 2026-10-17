@@ -24,8 +24,8 @@ uv run uvicorn app.main:app --reload
 
 ```sh
 cd backend
-uv run pytest -q                     # 128 тестов (SQLite в памяти)
-uv run python scripts/smoke_api.py   # 108 сквозных проверок живого API на Postgres (роли, права, гонки)
+uv run pytest -q                     # 344 теста (SQLite в памяти)
+uv run python scripts/smoke_api.py   # 109 сквозных проверок живого API на Postgres (роли, права, гонки)
 uv run python scripts/demo_check.py  # демо-сценарий CLAUDE.md §12 по шагам
 ```
 

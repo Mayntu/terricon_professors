@@ -1,4 +1,5 @@
 # JanaМен: docker compose up → http://localhost:5173 (фронт), http://localhost:8000/docs (API)
+# Порты заняты? Переопределите: DB_PORT=5433 API_PORT=8001 WEB_PORT=5174 docker compose up
 services:
   db:
     image: postgres:16-alpine
@@ -7,7 +8,7 @@ services:
       POSTGRES_PASSWORD: janamen
       POSTGRES_DB: janamen
     ports:
-      - "5432:5432"
+      - "${DB_PORT:-5432}:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
     healthcheck:
@@ -23,8 +24,9 @@ services:
         required: false
     environment:
       DATABASE_URL: postgresql+asyncpg://janamen:janamen@db:5432/janamen
+      CORS_ORIGINS: http://localhost:${WEB_PORT:-5173},http://127.0.0.1:${WEB_PORT:-5173}
     ports:
-      - "8000:8000"
+      - "${API_PORT:-8000}:8000"
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
       interval: 5s
@@ -39,10 +41,10 @@ services:
     working_dir: /app
     command: sh -c "npm ci && npm run dev -- --host 0.0.0.0 --port 5173"
     environment:
-      VITE_API_URL: http://localhost:8000
+      VITE_API_URL: http://localhost:${API_PORT:-8000}
       VITE_USE_POLLING: "true"
     ports:
-      - "5173:5173"
+      - "${WEB_PORT:-5173}:5173"
     volumes:
       - ./:/app
       - frontend-node-modules:/app/node_modules
