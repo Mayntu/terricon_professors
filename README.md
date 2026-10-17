@@ -176,7 +176,7 @@ Chromium через `npx playwright install chromium`, затем задать
 
 ```sh
 docker compose up          # db + backend (:8000, Swagger /docs) + frontend (:5173, VITE_API_URL задан)
-npx playwright test -c e2e-ext/playwright.config.ts   # 39 UI-тестов ext-экранов и демо-сценарий §12 (сбрасывают демо-данные)
+npx playwright test -c e2e-ext/playwright.config.ts   # 72 UI-теста: ext-экраны, чек-лист кейса, демо §12, устойчивость (сбрасывают демо-данные)
 ```
 
 Вход — плавающая кнопка **DEMO** (видна только в демо-режиме): любой из 8 персонажей, «+2 дня», «Сброс данных».
@@ -184,7 +184,7 @@ npx playwright test -c e2e-ext/playwright.config.ts   # 39 UI-тестов ext-�
 
 ### Экраны поверх фронтенда напарника
 
-Код лежит в `src/modules/*` и `src/services/http/`. Файлы напарника изменены только в 10 точках подключения,
+Код лежит в `src/modules/*` и `src/services/http/`. Файлы напарника изменены только в точках подключения,
 каждая — отдельным коммитом `touchpoint:` ([`docs/TOUCHPOINTS.md`](docs/TOUCHPOINTS.md)). Все экраны: RU/KZ,
 от 375 px, состояния «загрузка / пусто / ошибка», деньги «84 000 ₸», даты по Алматы. Скриншоты — [`docs/screenshots/`](docs/screenshots).
 
@@ -203,6 +203,8 @@ npx playwright test -c e2e-ext/playwright.config.ts   # 39 UI-тестов ext-�
 | HR-пульт: радар удержания, счётчик, рентген | `/hr` | HR |
 | Входящие HR: обращения и вопросы из AI Jana | `/hr/inbox` | HR |
 | Политики по странам | `/hr/policies` | HR |
+| Моя команда (сценарий 3 кейса), профиль сотрудника | `/manager/team`, `/employees/:id` | руководитель, HR |
+| Сотрудники, реестр и карточка любой заявки | `/hr/employees`, `/hr/requests…` | HR |
 | Пробелы базы знаний: черновик, правка, публикация | `/hr/knowledge` | HR |
 
 ### Реализовано, смоделировано, развитие
