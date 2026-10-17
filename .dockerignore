@@ -1,0 +1,15 @@
+# Контекст сборки фронтенда для сервера (deploy/frontend.Dockerfile)
+node_modules
+dist
+backend
+docs
+e2e-ext
+test-results
+playwright-report
+artifacts
+.git
+.env
+.env.*
+!.env.example
+*.pdf
+JanaMen_business_TZ.md
