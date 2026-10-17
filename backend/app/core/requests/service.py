@@ -34,6 +34,9 @@ DECISIONS = (APPROVED, REJECTED)
 
 
 async def can_view(session: AsyncSession, viewer: Employee, req: Request) -> bool:
+    owner = await session.get(Employee, req.employee_id)
+    if owner is None or not rbac.same_organization(viewer, owner):
+        return False
     if req.employee_id == viewer.id or viewer.role == rbac.HR:
         return True
     rtype = request_types.get(req.type)
@@ -49,7 +52,7 @@ def can_decide(actor: Employee, req: Request) -> bool:
     if req.status == ESCALATED or req.approver_kind == "hr":
         return actor.role == rbac.HR
     if req.approver_kind == "manager":
-        return actor.id == req.approver_id
+        return actor.role == rbac.MANAGER and actor.id == req.approver_id
     return False
 
 
@@ -90,6 +93,14 @@ async def _lock(session: AsyncSession, request_id: str) -> Request:
     if req is None:
         raise not_found("Заявка не найдена")
     return req
+
+
+async def lock_for_update(session: AsyncSession, request_id: str) -> Request:
+    existing = await session.get(Request, request_id)
+    if existing is None:
+        raise not_found("Заявка не найдена")
+    await lock_employee(session, existing.employee_id)
+    return await _lock(session, request_id)
 
 
 async def lock_employee(session: AsyncSession, employee_id: str) -> None:
@@ -156,7 +167,8 @@ async def create(
     approver_id: str | None = None
     status = SUBMITTED
     if approver_kind == "manager":
-        approver_id = employee.manager_id
+        manager = await session.get(Employee, employee.manager_id) if employee.manager_id else None
+        approver_id = manager.id if manager and manager.active and rbac.is_my_team(manager, employee) else None
         if approver_id is None:  # нет руководителя — сразу к HR
             approver_kind = "hr"
 
@@ -249,7 +261,9 @@ async def decide(
     comment: str | None = None,
 ) -> Request:
     await get_visible(session, actor, request_id)
-    req = await _lock(session, request_id)
+    req = await lock_for_update(session, request_id)
+    if not await can_view(session, actor, req):
+        raise forbidden()
     if not can_decide(actor, req):
         if req.status not in OPEN_STATUSES and req.employee_id != actor.id:
             raise conflict("ALREADY_DECIDED", "По заявке уже принято решение", {"status": req.status})
@@ -263,13 +277,18 @@ async def decide_by_system(
     session: AsyncSession, request_id: str, decision: str, reason: str, reason_code: str | None = None
 ) -> Request:
     """Решение по политике HR (гарантии, «Зарплата по факту»). reason — комментарий в историю."""
-    req = await _lock(session, request_id)
+    existing = await session.get(Request, request_id)
+    if existing is None:
+        raise not_found("Заявка не найдена")
+    if existing.type == "vacation":
+        raise forbidden("Решение по отпуску принимает руководитель или HR")
+    req = await lock_for_update(session, request_id)
     return await _apply_decision(session, req, None, decision, reason_code, reason)
 
 
 async def escalate_to_hr(session: AsyncSession, request_id: str, reason: str) -> Request:
     """Передать заявку HR (например, истёк срок ответа руководителя)."""
-    req = await _lock(session, request_id)
+    req = await lock_for_update(session, request_id)
     if req.status != SUBMITTED:
         raise conflict("ALREADY_DECIDED", "Заявку нельзя передать HR в текущем статусе")
     req.status = ESCALATED
@@ -282,7 +301,7 @@ async def escalate_to_hr(session: AsyncSession, request_id: str, reason: str) ->
 
 async def cancel(session: AsyncSession, actor: Employee, request_id: str) -> Request:
     await get_visible(session, actor, request_id)
-    req = await _lock(session, request_id)
+    req = await lock_for_update(session, request_id)
     if not can_cancel(actor, req):
         if req.status != SUBMITTED:
             raise conflict("ALREADY_DECIDED", "Отозвать можно только заявку на рассмотрении")
@@ -316,11 +335,14 @@ async def list_inbox(
     if user.role == rbac.MANAGER:
         q = select(Request).where(Request.approver_id == user.id, Request.approver_kind == "manager")
     elif user.role == rbac.HR:
-        q = select(Request).where((Request.approver_kind == "hr") | (Request.status == ESCALATED))
+        q = select(Request).where((Request.approver_kind == "hr") | (Request.status == ESCALATED) | (Request.decided_by == user.id))
     else:
         raise forbidden()
     if only_open:
         q = q.where(Request.status.in_(OPEN_STATUSES))
+    q = q.join(Employee, Employee.id == Request.employee_id).where(Employee.organization_id == user.organization_id)
+    if user.role == rbac.MANAGER:
+        q = q.where(Employee.manager_id == user.id)
     if type_code:
         q = q.where(Request.type == type_code)
     rows = list(await session.scalars(q.order_by(Request.created_at.desc())))
@@ -337,6 +359,7 @@ async def list_all(
     unit_id: str | None = None,
     created_from: date | None = None,
     created_to: date | None = None,
+    organization_id: str | None = None,
 ) -> list[Request]:
     """Реестр HR (вызывать только после проверки роли). Период — по дате создания, включительно."""
     q = select(Request)
@@ -344,8 +367,10 @@ async def list_all(
         q = q.where(Request.type == type_code)
     if status:
         q = q.where(Request.status == status)
-    if country or unit_id:
+    if country or unit_id or organization_id:
         q = q.join(Employee, Employee.id == Request.employee_id)
+        if organization_id:
+            q = q.where(Employee.organization_id == organization_id)
         if country:
             q = q.where(Employee.country == country)
         if unit_id:
@@ -375,4 +400,5 @@ __all__ = [
     "list_inbox",
     "list_mine",
     "lock_employee",
+    "lock_for_update",
 ]

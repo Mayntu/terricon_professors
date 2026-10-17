@@ -25,7 +25,7 @@ export default function CoursePage() {
         <ol className="ext-list" data-testid="course-lessons">{c.lessons.map((l) => <li key={l.id}><div><strong>{l.ord}. {l.title}</strong>{l.completed && <span className="ext-muted"><Check size={14} aria-hidden="true" /> {t('ac.done')}</span>}</div>
           <Link className="text-link" to={`/academy/${c.id}/lessons/${l.id}`}>{l.completed ? t('ac.open') : l.id === next?.id ? t('ac.continue') : t('ac.open')} <ArrowUpRight size={15} aria-hidden="true" /></Link></li>)}</ol></section>
       <section className="ext-section" aria-labelledby="ac-t"><span className="eyebrow">02</span><h2 id="ac-t">{t('ac.test')}</h2><p className="ext-muted">{t('ac.testHint', { n: c.questions.length, score: c.passingScore })}</p>
-        <Link className="button button--primary" to={`/academy/${c.id}/result`}>{t('ac.goTest')} <ArrowUpRight size={16} aria-hidden="true" /></Link></section>
+        <p>{t('ac.completionRule', { score: c.passingScore })}</p><Link className="button button--primary" to={`/academy/${c.id}/result`}>{t('ac.goTest')} <ArrowUpRight size={16} aria-hidden="true" /></Link></section>
     </>}</ExtState>
   </div>
 }

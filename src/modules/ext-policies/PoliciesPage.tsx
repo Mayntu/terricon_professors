@@ -50,9 +50,9 @@ function PolicyRow({ policy }: { policy: Policy }) {
     <div><strong>{t(`p.t.${type}`)}</strong><span className="ext-muted">{type}</span>{!draft.enabled && <Pill tone="warning">off</Pill>}</div>
     <div className="ext-form ext-policy-fields">
       {!isCountry && !isWage && <>{num('slaHours', t('p.sla'))}
-        <label><span>{t('p.timeout')}</span><select value={draft.onTimeout ?? ''} onChange={(e) => { setDraft({ ...draft, onTimeout: (e.target.value || null) as Policy['onTimeout'] }); setState(null) }}><option value="">{t('p.none')}</option><option value="auto_approve">{t('p.auto_approve')}</option><option value="escalate_hr">{t('p.escalate_hr')}</option></select></label></>}
+        <label><span>{t('p.timeout')}</span><select value={draft.onTimeout ?? ''} onChange={(e) => { setDraft({ ...draft, onTimeout: (e.target.value || null) as Policy['onTimeout'] }); setState(null) }}><option value="">{t('p.none')}</option><option value="escalate_hr">{t('p.escalate_hr')}</option></select></label></>}
       {isWage && <>{num('wageLimitPct', t('p.limit'))}{num('wageMaxPerPeriod', t('p.maxPer'))}{num('wageMinAmount', t('p.min'))}
-        <label><span>{t('p.timeout')}</span><select value={draft.onTimeout ?? ''} onChange={(e) => { setDraft({ ...draft, onTimeout: (e.target.value || null) as Policy['onTimeout'] }); setState(null) }}><option value="">{t('p.none')}</option><option value="auto_approve">{t('p.auto_approve')}</option><option value="escalate_hr">{t('p.escalate_hr')}</option></select></label></>}
+        <label><span>{t('p.timeout')}</span><select value={draft.onTimeout ?? ''} onChange={(e) => { setDraft({ ...draft, onTimeout: (e.target.value || null) as Policy['onTimeout'] }); setState(null) }}><option value="">{t('p.none')}</option><option value="escalate_hr">{t('p.escalate_hr')}</option></select></label></>}
       {isCountry && <>{num('reviewPeriodMonths', t('p.review'))}{num('replacementCostPct', t('p.replace'))}{num('avgAnnualSalary', t('p.avg'))}</>}
       {!isCountry && <label className="ext-check"><input type="checkbox" checked={draft.enabled} onChange={(e) => { setDraft({ ...draft, enabled: e.target.checked }); setState(null) }} />{t('p.enabled')}</label>}
     </div>

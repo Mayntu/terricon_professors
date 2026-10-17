@@ -1,12 +1,14 @@
+import { useT } from '@/modules/ext-core/main-i18n'
 /** Hand-drawn as SVG geometry: no raster assets, random data or animation loops. */
 export function ProcessMap() {
+  const t = useT()
   return (
     <figure className="process-panel" data-surface="dark" aria-labelledby="process-caption">
-      <div className="process-panel-top"><span className="eyebrow">JANA FLOW / СХЕМА 01</span><span className="map-orientation" aria-hidden="true">N <span>↗</span></span></div>
-      <div className="process-heading"><span className="process-overline">Связано с вами</span><h2>Меньше формальностей.<br /><span>Больше движения.</span></h2></div>
+      <div className="process-panel-top"><span className="eyebrow">{t('JANA FLOW / СХЕМА 01')}</span><span className="map-orientation" aria-hidden="true">N <span>↗</span></span></div>
+      <div className="process-heading"><span className="process-overline">{t('Связано с вами')}</span><h2>{t('Меньше формальностей.')}<br /><span>{t('Больше движения.')}</span></h2></div>
       <svg className="process-map" viewBox="0 0 560 510" role="img" aria-labelledby="process-map-title process-map-desc">
-        <title id="process-map-title">Маршруты рабочего дня</title>
-        <desc id="process-map-desc">Сотрудник в центре системы. Заявка проходит согласование и возвращается результатом. Обучение и поддержка HR соединены в одном пространстве.</desc>
+        <title id="process-map-title">{t('Маршруты рабочего дня')}</title>
+        <desc id="process-map-desc">{t('Сотрудник в центре системы. Заявка проходит согласование и возвращается результатом. Обучение и поддержка HR соединены в одном пространстве.')}</desc>
         <defs>
           <pattern id="process-grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" className="map-grid-line" /></pattern>
         </defs>
@@ -21,21 +23,21 @@ export function ProcessMap() {
           <path className="map-track map-track-paper js-route" pathLength="1" d="M104 68V104Q104 124 120 140L190 210Q206 226 206 248V282Q206 304 222 320L332 430H416" />
         </g>
         <g className="map-station-group">
-          <g className="map-station"><circle cx="64" cy="192" r="7" /><text x="64" y="162">Заявка</text><text className="map-mini-label" x="64" y="143">01 / НАЧАЛО</text></g>
-          <g className="map-station"><circle cx="374" cy="268" r="7" /><text x="354" y="237">Согласование</text></g>
-          <g className="map-station map-station-orange"><circle cx="476" cy="88" r="7" /><text x="376" y="56">Academy</text><text className="map-mini-label" x="376" y="36">02 / РАЗВИТИЕ</text></g>
-          <g className="map-station map-station-orange"><circle cx="90" cy="426" r="7" /><text x="64" y="460">Новые навыки</text></g>
-          <g className="map-station map-station-paper"><circle cx="104" cy="68" r="7" /><text x="130" y="73">Поддержка HR</text></g>
+          <g className="map-station"><circle cx="64" cy="192" r="7" /><text x="64" y="162">{t('Заявка')}</text><text className="map-mini-label" x="64" y="143">{t('01 / НАЧАЛО')}</text></g>
+          <g className="map-station"><circle cx="374" cy="268" r="7" /><text x="354" y="237">{t('Согласование')}</text></g>
+          <g className="map-station map-station-orange"><circle cx="476" cy="88" r="7" /><text x="376" y="56">Academy</text><text className="map-mini-label" x="376" y="36">{t('02 / РАЗВИТИЕ')}</text></g>
+          <g className="map-station map-station-orange"><circle cx="90" cy="426" r="7" /><text x="64" y="460">{t('Новые навыки')}</text></g>
+          <g className="map-station map-station-paper"><circle cx="104" cy="68" r="7" /><text x="130" y="73">{t('Поддержка HR')}</text></g>
           <g className="map-station map-station-paper"><circle cx="416" cy="430" r="7" /><text x="365" y="462">AI Jana</text><text className="map-mini-label" x="455" y="434">03</text></g>
         </g>
-        <g className="map-hub" transform="translate(270 268)"><circle r="53" className="map-hub-orbit" /><circle r="36" className="map-hub-core" /><text y="6" textAnchor="middle">ВЫ</text><path d="M-6-47H6M-6 47H6" className="map-hub-tick" /></g>
-        <g className="map-destination"><circle cx="480" cy="350" r="18" /><path d="m473 350 5 5 9-10" /><text x="403" y="391">Всё решено</text></g>
+        <g className="map-hub" transform="translate(270 268)"><circle r="53" className="map-hub-orbit" /><circle r="36" className="map-hub-core" /><text y="6" textAnchor="middle">{t('ВЫ')}</text><path d="M-6-47H6M-6 47H6" className="map-hub-tick" /></g>
+        <g className="map-destination"><circle cx="480" cy="350" r="18" /><path d="m473 350 5 5 9-10" /><text x="403" y="391">{t('Всё решено')}</text></g>
         <g className="map-route-tag" transform="translate(65 210)"><rect width="30" height="20" rx="3" /><text x="15" y="14" textAnchor="middle">01</text></g>
         <g className="map-route-tag map-route-tag-orange" transform="translate(295 161)"><rect width="30" height="20" rx="3" /><text x="15" y="14" textAnchor="middle">02</text></g>
         <g className="map-route-tag map-route-tag-paper" transform="translate(277 393)"><rect width="30" height="20" rx="3" /><text x="15" y="14" textAnchor="middle">03</text></g>
       </svg>
-      <figcaption id="process-caption" className="process-caption"><span className="map-caption-symbol" aria-hidden="true">↳</span><span>Разные задачи.<br /><strong>Одно пространство.</strong></span><span className="eyebrow map-caption-index">ЧЕЛОВЕК<br />В ЦЕНТРЕ</span></figcaption>
-      <div className="process-legend" aria-label="Маршруты"><span><i className="legend-line legend-mint" />Запросы</span><span><i className="legend-line legend-orange" />Развитие</span><span><i className="legend-line legend-paper" />Поддержка</span></div>
+      <figcaption id="process-caption" className="process-caption"><span className="map-caption-symbol" aria-hidden="true">↳</span><span>{t('Разные задачи.')}<br /><strong>{t('Одно пространство.')}</strong></span><span className="eyebrow map-caption-index">{t('ЧЕЛОВЕК')}<br />{t('В ЦЕНТРЕ')}</span></figcaption>
+      <div className="process-legend" aria-label={t('Маршруты')}><span><i className="legend-line legend-mint" />{t('Запросы')}</span><span><i className="legend-line legend-orange" />{t('Развитие')}</span><span><i className="legend-line legend-paper" />{t('Поддержка')}</span></div>
     </figure>
   )
 }

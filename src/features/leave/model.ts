@@ -2,6 +2,7 @@ export type LeaveStatus = 'Submitted' | 'Approved' | 'Rejected' | 'Cancelled' | 
 
 export interface LeaveRequestEvent {
   readonly id: string
+  readonly event?: string
   readonly status: LeaveStatus
   readonly occurredAt: string
   readonly actorLabel: string
@@ -29,6 +30,7 @@ export interface LeaveRequest {
   readonly createdAt: string
   readonly version: number
   readonly history: readonly LeaveEvent[]
+  readonly permissions?: { readonly canDecide: boolean; readonly canCancel: boolean }
 }
 
 export interface SubmitLeaveInput {

@@ -35,7 +35,7 @@ test('демо §12 целиком', async ({ page }) => {
     await page.getByLabel('Сумма').fill('60000')
     await page.getByRole('button', { name: /^Получить 60 000 ₸/ }).click()
     await page.getByRole('dialog').getByRole('button', { name: 'Подтвердить' }).click()
-    await expect(page.getByTestId('wage-sent')).toContainText('Деньги отправлены')
+    await expect(page.getByTestId('wage-sent')).toContainText('Демо-выплата смоделирована')
   })
 
   await timed('3. Ерлан: отказ без причины невозможен; чужая смена — 403', async () => {
@@ -51,17 +51,21 @@ test('демо §12 целиком', async ({ page }) => {
     expect((await page.request.get(`${API}/api/employees/emp-asel`, { headers })).status()).toBe(403)
   })
 
-  await timed('4. «+2 дня» → отпуск «Одобрено по сроку»', async () => {
+  await timed('4. «+2 дня» → отпуск «Передано HR»', async () => {
     await page.request.post(`${API}/api/demo/advance-time`, { data: { hours: 48 } })
     await loginAs(page, 'aigerim', '/requests')
-    await expect(page.getByTestId('guarantee-badge').filter({ hasText: 'Одобрено по сроку' }).first()).toBeVisible()
+    await expect(page.getByTestId('guarantee-badge').filter({ hasText: 'Передано HR' }).first()).toBeVisible()
   })
 
   await timed('5. Айгерим проходит курс → «все условия выполнены»', async () => {
     await page.goto('/profile')
     await page.getByTestId('ladder').getByRole('link', { name: 'Перейти к курсу' }).click()
     await page.getByTestId('course-lessons').getByRole('link', { name: 'Продолжить' }).click()
-    for (let i = 0; i < 3; i++) await page.getByRole('button', { name: /Урок изучен/ }).click()
+    for (let i = 0; i < 3; i++) {
+      await expect(page).toHaveURL(new RegExp(`/lessons/l-saf-${i + 2}$`))
+      await page.getByRole('button', { name: /Урок изучен/ }).click()
+      await expect(page).toHaveURL(i === 2 ? /\/academy\/course-safety\/result$/ : new RegExp(`/lessons/l-saf-${i + 3}$`))
+    }
     const sets = page.locator('.ext-question')
     for (const [i, a] of [1, 1, 1, 0].entries()) await sets.nth(i).locator('input').nth(a).check()
     await page.getByRole('button', { name: 'Отправить ответы' }).click()

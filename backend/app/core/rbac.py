@@ -19,16 +19,20 @@ EMPLOYEE, MANAGER, HR = "Employee", "Manager", "HRAdmin"
 
 
 def is_my_team(manager: Employee, employee: Employee) -> bool:
-    return manager.role == MANAGER and employee.manager_id == manager.id and employee.id != manager.id
+    return same_organization(manager, employee) and manager.role == MANAGER and employee.manager_id == manager.id and employee.id != manager.id
+
+
+def same_organization(user: Employee, employee: Employee) -> bool:
+    return user.organization_id == employee.organization_id
 
 
 def can_view_employee(user: Employee, employee: Employee) -> bool:
-    return user.id == employee.id or user.role == HR or is_my_team(user, employee)
+    return same_organization(user, employee) and (user.id == employee.id or user.role == HR or is_my_team(user, employee))
 
 
 def can_view_salary(user: Employee, employee: Employee) -> bool:
     """Зарплаты конкретных людей: только своя или HR."""
-    return user.id == employee.id or user.role == HR
+    return same_organization(user, employee) and (user.id == employee.id or user.role == HR)
 
 
 def ensure(condition: bool, message: str = "Недостаточно прав") -> None:

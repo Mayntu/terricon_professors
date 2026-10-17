@@ -1,0 +1,33 @@
+{
+  "video": "jana-from-request-to-result.mp4",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "frames": 900,
+  "durationSeconds": 30,
+  "codec": "H.264",
+  "pixelFormat": "yuv420p",
+  "audio": "none",
+  "renderedAt": "2026-10-17T17:32:17.989Z",
+  "method": "GSAP total time = frame / 30; paused timeline; Playwright PNG frames streamed in order to FFmpeg, no realtime screen recording",
+  "workers": 3,
+  "elapsedSeconds": 228,
+  "browserErrors": [],
+  "checkpoints": [
+    0,
+    2.5,
+    5.8,
+    7.3,
+    8.4,
+    9.7,
+    10.4,
+    12.4,
+    14.4,
+    16.7,
+    18.8,
+    21.5,
+    23.8,
+    26.5,
+    29.966666666666665
+  ]
+}

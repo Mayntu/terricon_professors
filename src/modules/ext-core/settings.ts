@@ -9,11 +9,11 @@ let lastToken: string | null = null
 
 async function load() {
   const token = tokenStore.read()
-  if (!token) { lastToken = null; return }
+  if (!token) { lastToken = null; settings = { features: null, demoMode: false, country: 'KZ', lang: 'ru', llmAvailable: false }; listeners.forEach(l => l()); return }
   if (token === lastToken && settings.features) return
   lastToken = token
   const r = await api.get<AppSettings>('/settings')
-  if (r.ok) { settings = r.data; listeners.forEach((l) => l()) }
+  if (r.ok && tokenStore.read() === token) { settings = r.data; listeners.forEach((l) => l()) }
 }
 revisionStore.subscribe(() => { void load() })
 void load()

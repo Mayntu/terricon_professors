@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { WorkspaceHeading } from '@/components/ui/WorkspaceHeading'
 import { Button } from '@/components/ui/Button'
 import { api } from '@/services/http/client'
@@ -23,10 +23,15 @@ export default function LearningAdminPage() {
   const courses = useApi<{ items: CourseSummary[] }>('/academy/courses')
   const [form, setForm] = useState({ employeeId: '', courseId: '', dueDate: '' })
   const [message, setMessage] = useState<{ ok: boolean; text: string } | null>(null)
+  const [busy, setBusy] = useState(false)
+  const sending = useRef(false)
   useEffect(() => { document.title = `${t('ac.hr.title')} · JanaМен` }, [t])
   async function assign(e: FormEvent) {
     e.preventDefault()
+    if (sending.current) return
+    sending.current = true; setBusy(true); setMessage(null)
     const r = await api.post('/academy/assignments', { employeeId: form.employeeId, courseId: form.courseId, ...(form.dueDate ? { dueDate: form.dueDate } : {}) })
+    sending.current = false; setBusy(false)
     setMessage(r.ok ? { ok: true, text: t('ac.hr.assigned') } : { ok: false, text: r.problem.message })
   }
   return <div className="business-page">
@@ -40,12 +45,13 @@ export default function LearningAdminPage() {
             <td>{r.dueDate ? shortDate(r.dueDate, true) : '—'}</td></tr>)}</tbody></table></div>
       </ExtState></section>
     <section className="ext-section"><span className="eyebrow">02</span><h2>{t('ac.hr.assign')}</h2>
+      <ExtState loading={people.loading || courses.loading} problem={people.problem ?? courses.problem} retry={() => { people.refresh(); courses.refresh() }}>
       <form className="ext-form" onSubmit={assign}>
         <label><span>{t('ac.hr.employee')}</span><select required value={form.employeeId} onChange={(e) => setForm({ ...form, employeeId: e.target.value })}><option value="" />{people.data?.items.map((p) => <option key={p.id} value={p.id}>{p.displayName} — {p.position}</option>)}</select></label>
         <label><span>{t('ac.hr.course')}</span><select required value={form.courseId} onChange={(e) => setForm({ ...form, courseId: e.target.value })}><option value="" />{courses.data?.items.map((c) => <option key={c.id} value={c.id}>{c.title}</option>)}</select></label>
         <label><span>{t('ac.hr.due')}</span><input type="date" min={todayAlmaty()} value={form.dueDate} onChange={(e) => setForm({ ...form, dueDate: e.target.value })} /></label>
         {message && <p className={message.ok ? 'ext-muted' : 'field-error'} role={message.ok ? 'status' : 'alert'}>{message.text}</p>}
-        <div className="ext-actions"><Button type="submit" disabled={!form.employeeId || !form.courseId}>{t('ac.hr.assign')}</Button></div>
-      </form></section>
+        <div className="ext-actions"><Button type="submit" disabled={busy || !form.employeeId || !form.courseId} aria-busy={busy}>{busy ? t('common.sending') : t('ac.hr.assign')}</Button></div>
+      </form></ExtState></section>
   </div>
 }

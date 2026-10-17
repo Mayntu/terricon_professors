@@ -17,9 +17,11 @@ test('лестница в профиле → курс → уроки → тес�
   await shot(page, 'academy-course-1440')
   await page.getByTestId('course-lessons').getByRole('link', { name: 'Продолжить' }).click()
   for (let i = 0; i < 3; i++) {
-    await expect(page.getByTestId('lesson-content')).toBeVisible()
+    await expect(page).toHaveURL(new RegExp(`/lessons/l-saf-${i + 2}$`))
+    await expect(page.locator('.route-frame[data-present="true"]').getByTestId('lesson-content')).toBeVisible()
     if (i === 0) await shot(page, 'academy-lesson-1440')
     await page.getByRole('button', { name: /Урок изучен/ }).click()
+    await expect(page).toHaveURL(i === 2 ? /\/academy\/course-safety\/result$/ : new RegExp(`/lessons/l-saf-${i + 3}$`))
   }
   await expect(page.getByTestId('test-form')).toBeVisible()
   await expect(page.locator('body')).not.toContainText('correct')

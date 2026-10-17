@@ -8,7 +8,9 @@ from app.core.org.models import Employee
 from app.core.profile import profile_registry
 from app.modules.ai_jana import service
 from app.modules.ai_jana.models import KbDoc
-from app.modules.ai_jana.schemas import AskIn, AskOut, KnowledgeArticle
+from app.modules.ai_jana.schemas import AskIn, AskOut, KnowledgeArticle, KnowledgeSection
+from app.modules.ai_jana.kb import split_sections
+from app.integrations.zup import get_zup
 
 router = APIRouter(prefix="/api/ai", tags=["ai_jana"])
 
@@ -24,14 +26,21 @@ async def source(article_id: str, user: Employee = Depends(current_user), sessio
     if article_id == service.OWN_DATA_ID:
         fields = await profile_registry.collect(session, user, user)
         bal = fields.get("leave_balance")
-        body = "Данные 1С:ЗУП видны только вам.\n\n"
+        body = "1С:ЗУП — mock-адаптер. Данные видны только вам.\n\n"
         if bal is not None:
             body += f"- Отпуск: {bal.days} дн. (на рассмотрении {bal.pending_days}, доступно {bal.available_days})\n"
+        salary = await get_zup().get_salary(session, user.id)
+        if salary is not None:
+            body += f"- Оклад: {service.money(salary.monthly_base, user.country)}\n"
+        wage = fields.get("wage_access")
+        if wage is not None:
+            body += f"- Доступно в демонстрации выплат: {service.money(wage.available, user.country)}\n"
         t = service.TEXTS.get(user.lang, service.TEXTS["ru"])
         from app.core import clock
 
-        return KnowledgeArticle(id=article_id, title=t["own_data_title"], body=body, updated_at=clock.now(), country=user.country, source_label="1С:ЗУП")
+        return KnowledgeArticle(id=article_id, title=t["own_data_title"], body=body, updated_at=clock.now(), country=user.country, source_label="1С:ЗУП · mock", sections=[KnowledgeSection(id="section-1", title=t["own_data_section"], body=body)])
     doc = await session.get(KbDoc, article_id)
-    if doc is None or doc.status != "published" or doc.country != user.country:
+    if doc is None or doc.status != "published" or doc.country != user.country or doc.organization_id != user.organization_id:
         raise not_found("Документ не найден")
-    return KnowledgeArticle(id=doc.id, title=doc.title, body=doc.body_md, updated_at=doc.updated_at, country=doc.country, source_label=doc.source_label)
+    return KnowledgeArticle(id=doc.id, title=doc.title, body=doc.body_md, updated_at=doc.updated_at, country=doc.country, source_label=doc.source_label,
+                            sections=[KnowledgeSection(id=f"section-{i}", title=title, body=text) for i, (title, text) in enumerate(split_sections(doc.body_md), 1)])

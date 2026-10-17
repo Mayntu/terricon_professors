@@ -1,3 +1,4 @@
+import { useT } from '@/modules/ext-core/main-i18n'
 import { NavLink } from 'react-router'
 import { useId } from 'react'
 import { LayoutGroup, motion, useReducedMotion } from 'motion/react'
@@ -6,17 +7,18 @@ import type { Role } from '@/features/identity/model'
 import { getNavigation } from '../navigation'
 
 export function AppNavigation({ role, onNavigate }: { role: Role; onNavigate?: () => void }) {
+  const t = useT()
   const id = useId()
   const reduce = useReducedMotion()
   return (
-    <LayoutGroup id={id}><nav className="app-navigation" aria-label="Основная навигация">
+    <LayoutGroup id={id}><nav className="app-navigation" aria-label={t('Основная навигация')}>
       {getNavigation(role).map((group) => (
-        <div className="nav-group" key={group.label}>
-          <p className="nav-group-label">{group.label}</p>
+        <div className="nav-group" key={t(group.label)}>
+          <p className="nav-group-label">{t(group.label)}</p>
           <ul>
             {group.items.map(({ path, label, icon: Icon, index, end }) => (
               <li key={path}><NavLink to={path} end={end ?? false} onClick={onNavigate} className={({ isActive }) => `app-nav-link${isActive ? ' is-active' : ''}`}>
-                {({ isActive }) => <>{isActive && <motion.span className="nav-motion-indicator" {...(!reduce ? { layoutId: 'active-route' } : {})} transition={reduce ? { duration: 0 } : motionTokens.spring} aria-hidden="true" />}<Icon size={19} strokeWidth={1.6} aria-hidden="true" /><span className="nav-label">{label}</span><span className="nav-index" aria-hidden="true">{index}</span></>}
+                {({ isActive }) => <>{isActive && <motion.span className="nav-motion-indicator" {...(!reduce ? { layoutId: 'active-route' } : {})} transition={reduce ? { duration: 0 } : motionTokens.spring} aria-hidden="true" />}<Icon size={19} strokeWidth={1.6} aria-hidden="true" /><span className="nav-label">{t(label)}</span><span className="nav-index" aria-hidden="true">{index}</span></>}
               </NavLink></li>
             ))}
           </ul>

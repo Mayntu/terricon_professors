@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import update
 
 from app.core.auth import current_user, issue_token, verify_password
 from app.core.db import DbSession
@@ -60,3 +61,13 @@ async def set_lang(body: LangIn, user: Employee = Depends(current_user)) -> User
         raise AppError("validation", "UNKNOWN_LANG", "Поддерживаются ru и kk", {"lang": ["ru | kk"]})
     user.lang = body.lang
     return user_out(user)
+
+
+@router.get("/config")
+async def login_config(request: Request):
+    return {"demoMode": request.app.state.settings.demo_mode}
+
+
+@router.post("/logout", status_code=204)
+async def logout(user: Employee = Depends(current_user), session: AsyncSession = DbSession):
+    await session.execute(update(Employee).where(Employee.id == user.id).values(auth_version=Employee.auth_version + 1))

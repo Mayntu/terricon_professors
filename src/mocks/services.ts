@@ -63,6 +63,7 @@ export function createMockServices(session: DemoSessionStore, store = new MockSt
   return {
     subscribe: store.subscribe, getRevision: store.getRevision,
     auth: {
+      signIn: async () => failure('unavailable', 'Для входа по паролю нужен сервер.'),
       async getCurrentUser() {
         if (!session.readRole()) return success(null)
         try { return success(currentUser(store.read())) }

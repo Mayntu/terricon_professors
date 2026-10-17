@@ -10,6 +10,7 @@ from app.core.ids import new_id
 from app.core.notifications import notify
 from app.core.org.models import Employee
 from app.core.org.service import get_employee
+from app.core.requests.service import lock_employee
 from app.modules.academy.models import Assignment, Attempt, Course, Lesson, LessonProgress, Question
 from app.modules.academy.schemas import CourseProgress
 
@@ -66,7 +67,7 @@ async def progress(session: AsyncSession, employee_id: str, course_id: str) -> C
     )
     passed = any(a.passed for a in attempts)
     best = max((a.score for a in attempts), default=None)
-    if passed:
+    if passed and len(completed) == len(lesson_ids):
         status = "Completed"
     elif completed or attempts:
         status = "InProgress"
@@ -85,6 +86,7 @@ async def progress(session: AsyncSession, employee_id: str, course_id: str) -> C
 
 
 async def complete_lesson(session: AsyncSession, user: Employee, lesson_id: str) -> CourseProgress:
+    await lock_employee(session, user.id)
     lesson = await session.get(Lesson, lesson_id)
     if lesson is None:
         raise not_found("Урок не найден")
@@ -96,11 +98,17 @@ async def complete_lesson(session: AsyncSession, user: Employee, lesson_id: str)
 
 
 async def submit(session: AsyncSession, user: Employee, course_id: str, answers: list[int]) -> tuple[Attempt, int, int]:
+    await lock_employee(session, user.id)
     course = await visible_course(session, user, course_id)
     qs = await questions(session, course_id)
     if len(answers) != len(qs):
         raise validation("ANSWERS_MISMATCH", f"Нужно ответить на все вопросы: {len(qs)}", "answers", {"total": len(qs)})
-    already_passed = (await progress(session, user.id, course_id)).passed
+    if not qs or any(a < 0 or a >= len(q.options) for q, a in zip(qs, answers, strict=True)):
+        raise validation("INVALID_ANSWER", "Выберите существующий вариант для каждого вопроса", "answers")
+    current = await progress(session, user.id, course_id)
+    if len(current.completed_lesson_ids) != current.total_lessons:
+        raise conflict("LESSONS_INCOMPLETE", "Сначала изучите все уроки курса")
+    already_passed = current.status == "Completed"
     correct = sum(1 for q, a in zip(qs, answers, strict=True) if q.correct_index == a)
     score = round(correct * 100 / len(qs)) if qs else 100
     attempt = Attempt(
@@ -132,8 +140,9 @@ async def assign(
     session: AsyncSession, actor: Employee, employee_id: str, course_id: str, due_date: date | None
 ) -> Assignment:
     employee = await get_employee(session, employee_id)
-    if not (actor.role == rbac.HR or rbac.is_my_team(actor, employee)):
+    if not (rbac.same_organization(actor, employee) and (actor.role == rbac.HR or rbac.is_my_team(actor, employee))):
         raise forbidden("Назначать курсы можно только своей команде")
+    await lock_employee(session, employee.id)
     course = await visible_course(session, employee, course_id)
     if due_date is not None and due_date < clock.today():
         raise validation("INVALID_DATES", "Срок не может быть в прошлом", "dueDate")
@@ -165,5 +174,4 @@ async def assign(
 
 async def has_passed(session: AsyncSession, employee_id: str, course_id: str) -> bool:
     """Публичный сервис для других модулей (лестница)."""
-    q = select(Attempt.id).where(Attempt.employee_id == employee_id, Attempt.course_id == course_id, Attempt.passed)
-    return (await session.scalars(q)).first() is not None
+    return (await progress(session, employee_id, course_id)).status == "Completed"

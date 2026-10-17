@@ -17,12 +17,19 @@ for (const width of [1440, 375]) {
     await resetDemo(page)
     await page.setViewportSize({ width, height: width === 375 ? 812 : 1000 })
     const problems: string[] = []
-    page.on('console', (m) => { if (m.type() === 'error') problems.push(`console ${page.url()}: ${m.text().slice(0, 200)}`) })
+    page.on('console', (m) => {
+      // Эта страница специально проверяет отказ в доступе к чужому сотруднику.
+      if (m.location().url.endsWith('/api/employees/emp-asel') && m.text().includes('403')) return
+      if (m.type() === 'error') problems.push(`console ${page.url()}: ${m.text().slice(0, 200)}`)
+    })
     page.on('pageerror', (e) => problems.push(`pageerror ${page.url()}: ${e.message}`))
     for (const [login, routes] of Object.entries(ROUTES)) {
       await loginAs(page, login, routes[0])
       for (const r of routes) {
         await page.goto(r)
+        await expect(page.locator('.app-shell')).toBeVisible()
+        await expect(page.locator('.route-loading')).toHaveCount(0)
+        if (login === 'erlan' && r === '/employees/emp-asel') await expect(page.getByTestId('employee-forbidden')).toBeVisible()
         await expect(page.locator('.query-loading')).toHaveCount(0, { timeout: 10_000 })
         await page.waitForTimeout(250)
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)

@@ -33,14 +33,22 @@ async def app():
     from app.main import create_app
     from app.seed.loader import run_seed
 
-    engine = create_async_engine(
-        "sqlite+aiosqlite:///:memory:", connect_args={"check_same_thread": False}, poolclass=StaticPool
-    )
+    qa_url = os.environ.get("QA_DATABASE_URL")
+    if qa_url:
+        from sqlalchemy.engine import make_url
+        assert make_url(qa_url).database.endswith("_test"), "Only a disposable *_test database is allowed"
+        engine = create_async_engine(qa_url)
+    else:
+        engine = create_async_engine(
+            "sqlite+aiosqlite:///:memory:", connect_args={"check_same_thread": False}, poolclass=StaticPool
+        )
     db._engine = engine
     db._sessionmaker = async_sessionmaker(engine, expire_on_commit=False)
     clock.set_offset(timedelta(0))
     application = create_app()
     async with engine.begin() as conn:
+        if qa_url:
+            await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
     async with db.sessionmaker()() as session:
         await run_seed(session, application.state.modules)

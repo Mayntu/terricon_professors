@@ -3,7 +3,7 @@ import { loginAs, noOverflow, resetDemo, shot } from './helpers'
 
 test.beforeEach(async ({ page }) => { await resetDemo(page) })
 
-test('«Зарплата по факту»: 3 нажатия от главной до «Деньги отправлены»', async ({ page }) => {
+test('«Зарплата по факту»: 3 нажатия от главной до «Демо-выплата смоделирована»', async ({ page }) => {
   await loginAs(page, 'aigerim')
   const widget = page.getByTestId('wage-widget')
   await expect(widget.getByTestId('wage-available')).toHaveText('84 000 ₸')
@@ -13,7 +13,7 @@ test('«Зарплата по факту»: 3 нажатия от главной
   await page.getByRole('button', { name: /^Получить 60 000 ₸/ }).click()          // 2
   await expect(page.getByRole('dialog')).toContainText('Получить 60 000 ₸?')
   await page.getByRole('dialog').getByRole('button', { name: 'Подтвердить' }).click() // 3
-  await expect(page.getByTestId('wage-sent')).toContainText('Деньги отправлены')
+  await expect(page.getByTestId('wage-sent')).toContainText('Демо-выплата смоделирована')
   await expect(page.getByTestId('wage-sent')).toContainText('60 000 ₸')
   await page.getByRole('button', { name: 'Готово' }).click()
   await expect(page.getByTestId('wage-available')).toHaveText('24 000 ₸')

@@ -1,5 +1,7 @@
 """AI Jana (CLAUDE.md §7.7): база страны, источник, честный отказ, защита чужих данных."""
 
+import json
+
 import pytest
 from sqlalchemy import inspect, select
 
@@ -117,12 +119,13 @@ async def test_llm_answer_carries_sources(client, login, monkeypatch):
 
     async def fake_complete(system, messages, max_tokens=2000):
         seen["prompt"] = messages[0]["content"]
-        return "Отпуск — 24 календарных дня [Ежегодный оплачиваемый отпуск, Продолжительность отпуска]."
+        return '{"sourceIds":["S1"]}'
 
     monkeypatch.setattr(llm, "complete", fake_complete)
     out = await ask(client, await login("aigerim"), "Сколько дней отпуска положено?")
-    assert out["answered"] and out["text"].startswith("Отпуск — 24") and out["sources"]
-    assert "Продолжительность отпуска" in seen["prompt"] and "Язык ответа: ru" in seen["prompt"]
+    evidence = json.loads(seen["prompt"])
+    assert out["answered"] and out["text"] == evidence["sources"][0]["text"] and out["sources"]
+    assert "Продолжительность отпуска" in seen["prompt"] and evidence["interfaceLanguage"] == "ru"
 
 
 async def test_llm_no_answer_marker_becomes_honest_refusal(client, login, monkeypatch):

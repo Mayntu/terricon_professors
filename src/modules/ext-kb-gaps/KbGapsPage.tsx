@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { WorkspaceHeading } from '@/components/ui/WorkspaceHeading'
 import { Button } from '@/components/ui/Button'
 import { SegmentedControl } from '@/components/motion/SegmentedControl'
@@ -42,11 +42,17 @@ function Editor({ gap }: { gap: Gap }) {
   const [doc, setDoc] = useState<Doc | null>(null)
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null)
   const [busy, setBusy] = useState(false)
+  const sending = useRef(false)
+  const [loadError, setLoadError] = useState('')
+  const [attempt, setAttempt] = useState(0)
   useEffect(() => {
     let active = true
-    void api.post<Doc>(`/ext/kb/gaps/${gap.id}/draft`).then((r) => { if (active && r.ok) setDoc(r.data) })
+    void api.post<Doc>(`/ext/kb/gaps/${gap.id}/draft`).then((r) => {
+      if (active) { if (r.ok) setDoc(r.data); else setLoadError(r.problem.message) }
+    })
     return () => { active = false }
-  }, [gap.id])
+  }, [gap.id, attempt])
+  if (loadError) return <div role="alert"><p className="field-error">{loadError}</p><Button variant="secondary" onClick={() => { setLoadError(''); setAttempt((n) => n + 1) }}>{t('common.retry')}</Button></div>
   if (!doc) return <p className="query-loading" role="status">{t('common.loading')}</p>
   async function save(): Promise<boolean> {
     if (!doc) return false
@@ -54,14 +60,17 @@ function Editor({ gap }: { gap: Gap }) {
     setMsg(r.ok ? { ok: true, text: t('kb.saved') } : { ok: false, text: r.problem.message })
     return r.ok
   }
-  async function publish() {
-    if (!doc) return
+  async function persist(publishing: boolean) {
+    if (!doc || sending.current) return
+    sending.current = true
     setBusy(true)
-    if (await save()) {
+    if (await save() && publishing) {
       const r = await api.post<Doc>(`/ext/kb/docs/${doc.id}/publish`)
       setMsg(r.ok ? { ok: true, text: t('kb.published') } : { ok: false, text: r.problem.message })
+      if (r.ok) setDoc(r.data)
     }
     setBusy(false)
+    sending.current = false
   }
   return <div className="ext-kb-editor" data-testid="kb-editor">
     <div className="ext-form" style={{ maxWidth: 'none' }}>
@@ -71,6 +80,6 @@ function Editor({ gap }: { gap: Gap }) {
     </div>
     <div className="ext-panel"><span className="eyebrow">{t('kb.preview')}</span><h3 style={{ marginTop: '.4rem' }}>{doc.title}</h3><Markdown text={doc.bodyMd} /><p className="ext-muted">{doc.sourceLabel}</p></div>
     {msg && <p className={msg.ok ? 'ext-muted' : 'field-error'} role={msg.ok ? 'status' : 'alert'}>{msg.text}</p>}
-    <div className="ext-actions"><Button variant="secondary" onClick={() => void save()} disabled={busy}>{t('kb.save')}</Button><Button onClick={() => void publish()} disabled={busy} aria-busy={busy}>{t('kb.publish')}</Button></div>
+    <div className="ext-actions"><Button variant="secondary" onClick={() => void persist(false)} disabled={busy || doc.status === 'published'}>{t('kb.save')}</Button><Button onClick={() => void persist(true)} disabled={busy || doc.status === 'published'} aria-busy={busy}>{t('kb.publish')}</Button></div>
   </div>
 }

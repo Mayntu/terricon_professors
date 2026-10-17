@@ -50,6 +50,7 @@ export interface NotificationService {
 
 export interface IAuthService {
   getCurrentUser(): Promise<ServiceResult<User | null>>
+  signIn(login: string, password: string): Promise<ServiceResult<User>>
   signInDemo(role: Role): Promise<ServiceResult<User>>
   signOut(): Promise<ServiceResult<null>>
 }

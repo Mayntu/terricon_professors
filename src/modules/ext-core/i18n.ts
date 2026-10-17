@@ -10,6 +10,7 @@ const KEY = 'jana.lang.v1'
 const dictionaries: Record<Lang, Dict> = { ru: {}, kk: {} }
 const listeners = new Set<() => void>()
 let lang: Lang = (() => { try { return localStorage.getItem(KEY) === 'kk' ? 'kk' : 'ru' } catch { return 'ru' } })()
+if (typeof document !== 'undefined') document.documentElement.lang = lang
 
 export function registerDictionary(ru: Dict, kk: Dict) {
   Object.assign(dictionaries.ru, ru)

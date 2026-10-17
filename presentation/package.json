@@ -1,0 +1,33 @@
+{
+  "name": "jana-the-flow",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.12.0" },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5180 --strictPort",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 5180 --strictPort",
+    "check": "oxlint src tests scripts && npm run build",
+    "test": "node scripts/test.mjs",
+    "capture": "node scripts/capture-product.mjs",
+    "capture:outro": "node scripts/capture-outro.mjs",
+    "prerender:outro": "npm run build",
+    "render:outro": "node scripts/render-outro.mjs"
+  },
+  "dependencies": {
+    "gsap": "3.15.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@types/node": "24.13.3",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7",
+    "@vitejs/plugin-react": "6.1.1",
+    "oxlint": "1.81.0",
+    "typescript": "6.0.2",
+    "vite": "8.3.0"
+  }
+}

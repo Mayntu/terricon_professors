@@ -3,7 +3,7 @@ import { API, loginAs, noOverflow, resetDemo, shot } from './helpers'
 
 test.beforeEach(async ({ page }) => { await resetDemo(page) })
 
-test('бейдж «Ответ до …» в списке и карточке; после «+2 дня» — «Одобрено по сроку»', async ({ page }) => {
+test('бейдж «Ответ до …» в списке и карточке; после «+2 дня» — «Передано HR»', async ({ page }) => {
   await loginAs(page, 'aigerim', '/requests')
   const row = page.locator('.request-table tbody tr', { has: page.locator('.request-status', { hasText: 'На согласовании' }) })
   await expect(row.getByTestId('guarantee-badge')).toContainText('Ответ до')
@@ -12,8 +12,8 @@ test('бейдж «Ответ до …» в списке и карточке; п
   await expect(page.locator('.request-status-line').getByTestId('guarantee-badge')).toContainText('Ответ до')
   await page.request.post(`${API}/api/demo/advance-time`, { data: { hours: 48 } })
   await page.reload()
-  await expect(page.locator('.request-status-line').getByTestId('guarantee-badge')).toContainText('Одобрено по сроку')
-  await expect(page.locator('.request-status').first()).toContainText('Согласовано')
+  await expect(page.locator('.request-status-line').getByTestId('guarantee-badge')).toContainText('Передано HR')
+  await expect(page.locator('.request-status').first()).toContainText('Передано HR')
 })
 
 test('отказ: без причины кнопка неактивна, с причиной — сохраняется', async ({ page }) => {

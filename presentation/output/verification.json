@@ -1,0 +1,14 @@
+{
+  "video": "jana-from-request-to-result.mp4",
+  "codec": "h264",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30.0,
+  "decodedFrames": 900,
+  "durationSeconds": 30.0,
+  "blackOrEmptyFrames": [],
+  "maxAdjacentFrameMeanDifference": 13.300156593322754,
+  "finalTwoSecondsMeanDifferenceMax": 0.000642361119389534,
+  "firstFrame": "first-frame.png",
+  "lastFrame": "last-frame.png"
+}

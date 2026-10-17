@@ -2,6 +2,7 @@ import { registerDictionary } from '../ext-core/i18n'
 
 registerDictionary(
   {
+    'ac.completionRule': 'Курс завершён после всех уроков и теста с проходным баллом.', 'ac.finishLessons': 'Сначала изучите все уроки.', 'ac.savedResult': 'Результат сохранён в вашем профиле.', 'ac.lessonMissing': 'Урок не найден', 'ac.original': 'Материалы показаны на языке оригинала.',
     'ac.profile.title': 'Назначенное обучение', 'ac.profile.none': 'Курсы пока не назначены',
     'ac.title': 'Jana Academy', 'ac.index': '03 / ОБУЧЕНИЕ', 'ac.lead': 'Назначенные курсы, материалы и проверка знаний. Пройденный курс — шаг к следующему грейду.',
     'ac.assigned': 'Мои курсы', 'ac.catalog': 'Каталог', 'ac.due': 'Пройти до {date}', 'ac.min': '{n} мин', 'ac.lessons': 'Уроки: {done} из {total}',
@@ -15,6 +16,7 @@ registerDictionary(
     'ac.hr.course': 'Курс', 'ac.hr.due': 'Срок (необязательно)', 'ac.hr.assigned': 'Курс назначен, сотрудник получил уведомление', 'ac.hr.progress': 'Прогресс',
   },
   {
+    'ac.completionRule': 'Курс барлық сабақтар оқылып, тесттен өту балы жиналғанда аяқталады.', 'ac.finishLessons': 'Алдымен барлық сабақты оқыңыз.', 'ac.savedResult': 'Нәтиже профиліңізде сақталды.', 'ac.lessonMissing': 'Сабақ табылмады', 'ac.original': 'Материалдар түпнұсқа тілінде берілген.',
     'ac.profile.title': 'Тағайындалған оқу', 'ac.profile.none': 'Курстар әлі тағайындалмаған',
     'ac.title': 'Jana Academy', 'ac.index': '03 / ОҚУ', 'ac.lead': 'Тағайындалған курстар, материалдар және білімді тексеру. Өткен курс — келесі грейдке қадам.',
     'ac.assigned': 'Менің курстарым', 'ac.catalog': 'Каталог', 'ac.due': '{date} дейін өту', 'ac.min': '{n} мин', 'ac.lessons': 'Сабақтар: {total} ішінен {done}',

@@ -18,6 +18,7 @@ const ROUTES: Record<string, string[]> = {
 }
 
 test('все экраны: загрузка, обновление страницы, «назад» — без белого экрана; время загрузки', async ({ page }) => {
+  test.setTimeout(180_000) // Все роли, десятки переходов и reload на Docker Desktop.
   const errors = pageErrors(page)
   const slow: string[] = []
   for (const [login, routes] of Object.entries(ROUTES)) {
@@ -83,7 +84,8 @@ test('медленная сеть: состояния загрузки, кноп
   const cdp = await page.context().newCDPSession(page)
   await cdp.send('Network.enable')
   await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 1500, downloadThroughput: 50_000, uploadThroughput: 50_000 })
-  await page.goto('/wage')
+  // Переход внутри SPA проверяет задержку данных, без повторной загрузки dev-бандла под ограничением 50 КБ/с.
+  await page.getByRole('navigation', { name: 'Основная навигация' }).getByRole('link', { name: 'Зарплата по факту', exact: true }).click()
   await expect(page.locator('.query-loading').first()).toBeVisible()
   await expect(page.getByTestId('wage-available')).toBeVisible({ timeout: 30_000 })
   await page.getByLabel('Сумма').fill('10000')

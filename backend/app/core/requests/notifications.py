@@ -50,7 +50,7 @@ async def _notify_hr(
 ) -> None:
     owner = await session.get(Employee, req.employee_id)
     # HR страны сотрудника; если в стране HR нет — всем HR
-    hrs = await list_hr(session, owner.country if owner else None) or await list_hr(session)
+    hrs = (await list_hr(session, owner.country, owner.organization_id) or await list_hr(session, organization_id=owner.organization_id)) if owner else []
     for hr in hrs:
         if hr.id != req.employee_id:
             await notify(session, hr.id, kind, title_key, body_key, _params(req, **extra), _target(req))

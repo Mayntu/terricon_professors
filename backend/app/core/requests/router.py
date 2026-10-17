@@ -79,7 +79,7 @@ async def registry(
     session: AsyncSession = DbSession,
 ) -> Page[RequestOut]:
     """Реестр всех заявок для HR с фильтрами."""
-    rows = await service.list_all(session, type, status, country, unit_id, created_from, created_to)
+    rows = await service.list_all(session, type, status, country, unit_id, created_from, created_to, user.organization_id)
     if unit_id or country:  # фильтры, сужающие круг людей, не должны раскрывать автора анонимной заявки
         rows = [r for r in rows if not request_types.get(r.type).hide_author(r, user)]
     return await _page(session, rows, user)

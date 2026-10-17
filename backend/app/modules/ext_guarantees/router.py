@@ -16,7 +16,7 @@ from app.core.requests.registry import request_types
 from app.integrations.zup import get_zup
 from app.modules.ext_guarantees import service
 from app.modules.ext_guarantees.models import Policy, RequestGuarantee
-from app.modules.ext_guarantees.policies import MONEY_TYPES, country_setting
+from app.modules.ext_guarantees.policies import country_setting
 from app.modules.ext_guarantees.schemas import OpenGuarantee, PolicyOut, PolicyUpdate, ReasonOut, SummaryOut
 
 router = APIRouter(prefix="/api/ext", tags=["ext: guarantees"])
@@ -90,8 +90,8 @@ async def update_policy(
         raise not_found("Политика не найдена")
     changes = body.model_dump(exclude_unset=True)
     on_timeout = changes.get("on_timeout", policy.on_timeout)
-    if policy.request_type in MONEY_TYPES and on_timeout == "auto_approve":
-        raise validation("AUTO_APPROVE_FORBIDDEN", "Для денежных заявок автоодобрение по сроку запрещено", "onTimeout")
+    if on_timeout == "auto_approve":
+        raise validation("AUTO_APPROVE_FORBIDDEN", "Автоодобрение по сроку запрещено: решение принимает человек", "onTimeout")
     for key, value in changes.items():
         setattr(policy, key, value)
     policy.updated_by, policy.updated_at = user.id, clock.now()

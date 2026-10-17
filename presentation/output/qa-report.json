@@ -1,0 +1,28 @@
+{
+  "scope": "Isolated presentation and cinematic outro, not a new backend regression audit",
+  "playwright": {
+    "startTime": "2026-10-17T17:26:32.387Z",
+    "duration": 101552.239,
+    "expected": 15,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "checks": {
+    "presentationLintTypescriptBuild": "passed",
+    "primaryAppLintTypescriptBuild": "passed",
+    "primaryWeb5173": "HTTP 200",
+    "primaryApi8000Health": "HTTP 200",
+    "backwardSeekingAndKeyboardRepeatedThreeTimes": "6/6 passed",
+    "resolutions": [
+      "1920x1080",
+      "1440x900",
+      "1366x768"
+    ]
+  },
+  "limitations": [
+    "Chrome on this Windows machine; Safari/Firefox and a physical projector not tested",
+    "Silent movie",
+    "Pre-recorded real UI with fictitious QA data; presentation has no live API calls"
+  ]
+}

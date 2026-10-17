@@ -60,7 +60,7 @@ test('HR: реестр заявок — фильтры, анонимное об�
   await page.getByLabel('Статус').selectOption('Rejected')
   await expect(reg.locator('li')).toHaveCount(2)
   await reg.getByRole('link').first().click()
-  await expect(page.getByTestId('hr-request-history').locator('li')).not.toHaveCount(0)
+  await expect(page.locator('.request-history li')).not.toHaveCount(0)
   await shot(page, 'hr-request-card-1440')
 })
 

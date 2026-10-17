@@ -25,6 +25,7 @@ class Unit(Base):
     __tablename__ = "units"
 
     id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    organization_id: Mapped[str] = mapped_column(String(64), default="jana-post", server_default="jana-post", index=True)
     country: Mapped[str] = mapped_column(ForeignKey("countries.code"))
     kind: Mapped[str] = mapped_column(String(32))
     name: Mapped[str] = mapped_column(String(200))
@@ -35,7 +36,9 @@ class Employee(Base):
     __tablename__ = "employees"
 
     id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    organization_id: Mapped[str] = mapped_column(String(64), default="jana-post", server_default="jana-post", index=True)
     login: Mapped[str] = mapped_column(String(64), unique=True)
+    auth_version: Mapped[int] = mapped_column(default=0, server_default="0")
     password_hash: Mapped[str] = mapped_column(String(255))
     full_name: Mapped[str] = mapped_column(String(200))
     role: Mapped[str] = mapped_column(String(16))  # Employee | Manager | HRAdmin
