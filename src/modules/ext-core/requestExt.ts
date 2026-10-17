@@ -4,7 +4,8 @@ import { api, revisionStore } from '@/services/http/client'
 /** Расширения карточки заявки (extensions.guarantee и др.) с кэшем на текущую ревизию —
  * список из N строк не делает лишних повторных запросов при перерисовке. */
 export interface GuaranteeExt { deadlineAt: string; resolution: 'none' | 'auto_approved' | 'escalated' | 'overdue'; overdue: boolean; decidedLate: boolean }
-interface RequestExt { status: string; extensions: { guarantee?: GuaranteeExt } }
+export interface DocumentRef { id: string; kind: string; number: string }
+interface RequestExt { status: string; documents?: DocumentRef[]; extensions: { guarantee?: GuaranteeExt } }
 
 const cache = new Map<string, Promise<RequestExt | null>>()
 let cachedRevision = -1

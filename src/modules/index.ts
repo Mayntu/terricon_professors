@@ -14,6 +14,7 @@ import './ext-shifts/i18n'
 import './ext-kb-gaps/i18n'
 import { demoModule } from './ext-demo'
 import { peopleModule } from './ext-people'
+import { documentsModule } from './ext-documents'
 import './ext-people/i18n'
 import './ext-grievance/i18n'
 import './ext-policies/i18n'
@@ -34,6 +35,7 @@ registerModules([
   shiftsModule,
   demoModule,
   peopleModule,
+  documentsModule,
 ])
 
 export { extElement, extNavigation, extPlannedScreens } from './ext-core/registry'
