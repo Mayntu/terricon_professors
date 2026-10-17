@@ -15,5 +15,6 @@ export const academyModule: ExtModule = {
     { id: 'hr-learning', titleKey: 'ac.hr.title', roles: ['HRAdmin'], component: lazy(() => import('./LearningAdminPage')) },
     { id: 'ext-team-learning', path: '/manager/learning', titleKey: 'ac.hr.title', roles: ['Manager'], component: lazy(() => import('./LearningAdminPage')) },
   ],
+  slots: { 'profile.sections': [lazy(() => import('./AssignedTraining'))] },
   nav: [{ path: '/manager/learning', labelKey: 'ac.hr.title', icon: BookOpen, roles: ['Manager'] }],
 }

@@ -3,22 +3,13 @@ import { WorkspaceHeading } from '@/components/ui/WorkspaceHeading'
 import { Button } from '@/components/ui/Button'
 import { SegmentedControl } from '@/components/motion/SegmentedControl'
 import { api } from '@/services/http/client'
-import { registerDictionary, useT } from '../ext-core/i18n'
+import { useT } from '../ext-core/i18n'
+import './i18n'
 import { useApi } from '../ext-core/useApi'
 import { dateTime } from '../ext-core/format'
 import { Markdown } from '../ext-core/Markdown'
 import { ExtState, LangSwitch, Pill } from '../ext-core/ui'
 
-registerDictionary(
-  { 'kb.title': 'Пробелы базы знаний', 'kb.index': 'HR / БАЗА ЗНАНИЙ', 'kb.lead': 'Вопросы, на которые AI Jana честно ответила «нет надёжной информации», сгруппированы по смыслу. Без имён тех, кто спрашивал. AI готовит черновик — правило утверждает и публикует HR.',
-    'kb.count': 'Вопросов: {n}', 'kb.last': 'последний {date}', 'kb.draft': 'Подготовить черновик', 'kb.edit': 'Править черновик', 'kb.status.open': 'без ответа', 'kb.status.drafted': 'черновик', 'kb.status.published': 'опубликовано',
-    'kb.empty': 'Пробелов нет', 'kb.emptyText': 'Все вопросы сотрудников закрыты базой знаний.', 'kb.docTitle': 'Название правила', 'kb.source': 'Источник (как увидит сотрудник)', 'kb.body': 'Текст правила (markdown: ## раздел)',
-    'kb.preview': 'Как увидит сотрудник', 'kb.save': 'Сохранить черновик', 'kb.saved': 'Черновик сохранён', 'kb.publish': 'Опубликовать', 'kb.published': 'Опубликовано — AI Jana уже отвечает по этому правилу', 'kb.samples': 'Как спрашивали' },
-  { 'kb.title': 'Білім базасындағы олқылықтар', 'kb.index': 'HR / БІЛІМ БАЗАСЫ', 'kb.lead': 'AI Jana «сенімді ақпарат жоқ» деп адал жауап берген сұрақтар мағынасы бойынша топтастырылған. Сұрағандардың аты жоқ. AI жоба дайындайды — ережені HR бекітеді.',
-    'kb.count': 'Сұрақтар: {n}', 'kb.last': 'соңғысы {date}', 'kb.draft': 'Жоба дайындау', 'kb.edit': 'Жобаны түзету', 'kb.status.open': 'жауапсыз', 'kb.status.drafted': 'жоба', 'kb.status.published': 'жарияланды',
-    'kb.empty': 'Олқылық жоқ', 'kb.emptyText': 'Қызметкерлердің барлық сұрақтары білім базасымен жабылды.', 'kb.docTitle': 'Ереже атауы', 'kb.source': 'Дереккөз', 'kb.body': 'Ереже мәтіні (markdown: ## бөлім)',
-    'kb.preview': 'Қызметкер қалай көреді', 'kb.save': 'Жобаны сақтау', 'kb.saved': 'Жоба сақталды', 'kb.publish': 'Жариялау', 'kb.published': 'Жарияланды — AI Jana осы ереже бойынша жауап береді', 'kb.samples': 'Қалай сұрады' },
-)
 
 interface Gap { id: string; country: string; label: string; count: number; samples: string[]; status: 'open' | 'drafted' | 'published'; draftDocId: string | null; lastAskedAt: string }
 interface Doc { id: string; title: string; sourceLabel: string; bodyMd: string; status: string }

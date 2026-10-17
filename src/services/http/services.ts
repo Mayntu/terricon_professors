@@ -50,7 +50,15 @@ export function createHttpServices(session: DemoSessionStore): ApplicationServic
       signInDemo: (role) => signIn({ role }),
       async signOut() { tokenStore.write(null); session.writeRole(null); revisionStore.bump(); return { ok: true, data: null } },
     },
-    profiles: { getMyProfile: (options) => api.get<EmployeeProfile>('/profile/me', options) },
+    profiles: {
+      // Кейс: остаток отпуска — с учётом заявок на рассмотрении. Бэкенд отдаёт и остаток 1С (days),
+      // и доступное (availableDays); экраны напарника показывают days — подставляем доступное.
+      getMyProfile: async (options) => {
+        const result = await api.get<EmployeeProfile & { leaveBalance: { availableDays?: number } }>('/profile/me', options)
+        if (!result.ok || result.data.leaveBalance.availableDays == null) return result
+        return { ok: true, data: { ...result.data, leaveBalance: { ...result.data.leaveBalance, days: result.data.leaveBalance.availableDays } } }
+      },
+    },
     leaveRequests: {
       listMine: async (options) => mapPage(await api.get<Page<ApiLeave>>('/leave/my', options)),
       listTeam: async (options) => mapPage(await api.get<Page<ApiLeave>>('/leave/team', options)),
