@@ -54,5 +54,4 @@ test('казахский интерфейс', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Нақты жалақы')
   await expect(page.getByText('Қазір қолжетімді')).toBeVisible()
   await shot(page, 'wage-kk-1440')
-  await page.getByRole('radio', { name: 'RU' }).check({ force: true })
 })

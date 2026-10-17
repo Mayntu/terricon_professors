@@ -6,6 +6,7 @@ import { hrConsoleModule } from './ext-hr'
 import { academyModule } from './academy'
 import { ladderModule } from './ext-ladder'
 import { policiesModule } from './ext-policies'
+import { aiJanaModule } from './ai-jana'
 import './ext-policies/i18n'
 import './ext-wage/i18n'
 import './ext-hr/i18n'
@@ -18,6 +19,7 @@ registerModules([
   academyModule,
   ladderModule,
   policiesModule,
+  aiJanaModule,
 ])
 
 export { extElement, extNavigation, extPlannedScreens } from './ext-core/registry'

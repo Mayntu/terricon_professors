@@ -101,3 +101,7 @@ td .ext-badges { display: flex; margin: .35rem 0 0; }
 .ext-policy-fields { grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); max-width: none; align-items: end; }
 .ext-policy-fields label > span { font-size: .85rem; }
 @media (max-width: 900px) { .ext-policy { grid-template-columns: 1fr; } }
+.ext-ask { max-width: 46rem; margin-top: 1rem; position: sticky; bottom: 4.5rem; background: var(--surface-page); padding-top: .5rem; }
+@media (min-width: 1024px) { .ext-ask { bottom: 0; } }
+.ext-bubble .eyebrow { display: block; margin-bottom: .35rem; }
+.ext-sources a { display: inline-flex; flex-wrap: wrap; gap: .25rem; align-items: center; }

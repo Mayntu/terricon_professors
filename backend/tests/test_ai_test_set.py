@@ -36,3 +36,8 @@ async def test_rule_questions_are_not_refused_as_other_person(client, login, que
     """Ложные срабатывания защиты: вопросы о правилах не должны получать отказ «чужие данные»."""
     out = (await client.post("/api/ai/ask", headers=await login("aigerim"), json={"question": question})).json()
     assert out.get("reason") != "other_person", (question, out)
+
+
+async def test_kazakh_question_finds_duration_section(client, login):
+    out = (await client.post("/api/ai/ask", headers=await login("aigerim"), json={"question": "Демалыс қанша күн?"})).json()
+    assert out["answered"] and out["sources"][0]["section"] == "Продолжительность отпуска", out["sources"]
