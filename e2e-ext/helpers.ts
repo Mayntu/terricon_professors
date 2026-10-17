@@ -12,7 +12,8 @@ export async function loginAs(page: Page, login: string, path = '/dashboard') {
   const r = await page.request.post(`${API}/api/demo/login-as`, { data: { login } })
   const { accessToken, user } = await r.json()
   await page.goto('/login')
-  await page.evaluate(([token, role]) => { sessionStorage.setItem('jana.api-token.v1', token); sessionStorage.setItem('jana.demo-role.v1', role) }, [accessToken, user.role])
+  await page.request.put(`${API}/api/auth/me/lang`, { headers: { Authorization: `Bearer ${accessToken}` }, data: { lang: 'ru' } })
+  await page.evaluate(([token, role]) => { sessionStorage.setItem('jana.api-token.v1', token); sessionStorage.setItem('jana.demo-role.v1', role); localStorage.setItem('jana.lang.v1', 'ru') }, [accessToken, user.role])
   await page.goto(path)
   await expect(page.locator('.app-shell')).toBeVisible()
 }
