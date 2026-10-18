@@ -1,4 +1,4 @@
-"""Прогон демо-сценария CLAUDE.md §12 через API собранного приложения (по шагам, с чистой базы).
+"""Прогон демо-сценария PROJECT_SPEC.md §12 через API собранного приложения (по шагам, с чистой базы).
 
     docker compose up -d && cd backend && uv run python scripts/demo_check.py [http://localhost:8000]
 

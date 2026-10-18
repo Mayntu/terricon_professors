@@ -7,7 +7,7 @@ from app.core.db import Base
 
 
 class GradeLadder(Base):
-    """Грейд, вилка и условия перехода на следующий (CLAUDE.md §7.4). Зарплат конкретных людей здесь нет."""
+    """Грейд, вилка и условия перехода на следующий (PROJECT_SPEC.md §7.4). Зарплат конкретных людей здесь нет."""
 
     __tablename__ = "ext_grade_ladders"
 

@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 import { API, loginAs, resetDemo } from './helpers'
 
-/** Чек-лист кейса (CLAUDE.md §12.1) через интерфейс, скриншот на каждый шаг — docs/screenshots/case/. */
+/** Чек-лист кейса (PROJECT_SPEC.md §12.1) через интерфейс, скриншот на каждый шаг — docs/screenshots/case/. */
 test.setTimeout(240_000)
 let n = 0
 async function step(page: Page, name: string) {

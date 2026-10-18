@@ -1,5 +1,5 @@
 {
-  "_comment": "Политики HR по странам (CLAUDE.md §11). request_type '*' — настройки страны. Валюта — страны (KZT/KGS).",
+  "_comment": "Политики HR по странам (PROJECT_SPEC.md §11). request_type '*' — настройки страны. Валюта — страны (KZT/KGS).",
   "rows": [
     {"country": "KZ", "request_type": "*", "review_period_months": 12, "replacement_cost_pct": 30, "avg_annual_salary": 3000000},
     {"country": "KZ", "request_type": "vacation", "sla_hours": 48, "on_timeout": "escalate_hr"},

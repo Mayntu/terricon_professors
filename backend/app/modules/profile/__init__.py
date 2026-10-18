@@ -1,4 +1,4 @@
-"""Профиль сотрудника, команда, карточки сотрудников (CLAUDE.md §5.1). Данные — только чтение."""
+"""Профиль сотрудника, команда, карточки сотрудников (PROJECT_SPEC.md §5.1). Данные — только чтение."""
 
 from app.core.modules import BackendModule
 from app.modules.profile.router import router

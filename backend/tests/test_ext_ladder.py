@@ -1,4 +1,4 @@
-"""«Открытая лестница» (CLAUDE.md §7.4)."""
+"""«Открытая лестница» (PROJECT_SPEC.md §7.4)."""
 
 
 async def test_ladder_for_aigerim(client, login):

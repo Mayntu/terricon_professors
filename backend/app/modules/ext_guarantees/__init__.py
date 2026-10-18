@@ -1,4 +1,4 @@
-"""Гарантии и политики: ответ в срок, отказ только с причиной (CLAUDE.md §7.1). Флаг: guarantees."""
+"""Гарантии и политики: ответ в срок, отказ только с причиной (PROJECT_SPEC.md §7.1). Флаг: guarantees."""
 
 from app.core.modules import BackendModule
 from app.modules.ext_guarantees.register import register

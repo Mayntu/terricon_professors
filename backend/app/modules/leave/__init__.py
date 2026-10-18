@@ -1,4 +1,4 @@
-"""Заявка «Отпуск» (тип vacation) на движке заявок (CLAUDE.md §5.2)."""
+"""Заявка «Отпуск» (тип vacation) на движке заявок (PROJECT_SPEC.md §5.2)."""
 
 from app.core.modules import BackendModule
 from app.modules.leave.register import register

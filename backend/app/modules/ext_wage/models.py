@@ -7,7 +7,7 @@ from app.core.db import Base
 
 
 class Withdrawal(Base):
-    """Выводы «Зарплаты по факту». Радар удержания эту таблицу НЕ читает (CLAUDE.md §7.5)."""
+    """Выводы «Зарплаты по факту». Радар удержания эту таблицу НЕ читает (PROJECT_SPEC.md §7.5)."""
 
     __tablename__ = "ext_wage_withdrawals"
 

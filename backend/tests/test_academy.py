@@ -1,4 +1,4 @@
-"""Jana Academy (CLAUDE.md §5.4)."""
+"""Jana Academy (PROJECT_SPEC.md §5.4)."""
 
 from app.core.events import events
 

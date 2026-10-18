@@ -1,5 +1,5 @@
 """Ответ совместим и с AssistantAnswer фронтенда (kind/text/message/escalation),
-и с форматом CLAUDE.md (answer/answered/escalateAvailable)."""
+и с форматом PROJECT_SPEC.md (answer/answered/escalateAvailable)."""
 
 from datetime import datetime
 from typing import Literal
@@ -29,7 +29,7 @@ class AskOut(ApiModel):
     message: str | None  # kind=no-answer
     sources: list[KnowledgeSource]
     escalation: Literal["HR"] | None
-    # Формат CLAUDE.md
+    # Формат PROJECT_SPEC.md
     answer: str
     answered: bool
     escalate_available: bool

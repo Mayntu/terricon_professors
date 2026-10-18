@@ -4,7 +4,7 @@
 Поля и типы совпадают с `src/services/contracts.ts` и `src/features/*/model.ts`. Всё, что от них
 отличается, перечислено в разделе [«Расхождения»](#расхождения-с-контрактами-фронтенда).
 
-> **Состояние: весь бэкенд из CLAUDE.md готов** (этапы 1–5): обязательная часть кейса и все ext-фичи, каждая за своим флагом. Чек-лист — [`CASE_CHECKLIST.md`](CASE_CHECKLIST.md).
+> **Состояние: весь бэкенд из PROJECT_SPEC.md готов** (этапы 1–5): обязательная часть кейса и все ext-фичи, каждая за своим флагом. Чек-лист — [`CASE_CHECKLIST.md`](CASE_CHECKLIST.md).
 
 **Статусы:** ✅ работает · 🟡 заглушка с фиксированным ответом (заголовок `X-Stub: true`), формат финальный · ⏳ будет.
 
@@ -220,7 +220,7 @@ AskOut = {
   message: string | null,                          // no-answer
   sources: { articleId, title, section, updatedAt, sourceLabel }[],   // у grounded минимум один
   escalation: "HR" | null,
-  answer, answered, escalateAvailable,             // формат CLAUDE.md
+  answer, answered, escalateAvailable,             // формат PROJECT_SPEC.md
   reason: "no_match" | "other_person_data" | null
 }
 ```
@@ -423,13 +423,13 @@ Seed:
 | # | Где | Фронтенд | Бэкенд | Нужна правка во фронте? |
 |---|---|---|---|---|
 | 1 | Статусы | `LeaveStatus` без `Escalated` | Есть `Escalated` (передано HR по сроку) | Да, когда подключим гарантии (этап 4). Для отпуска в KZ политика `escalate_hr`; HR принимает окончательное решение |
-| 2 | Остаток | Submitted не резервирует дни | `days` считается так же; дополнительно отдаются `pendingDays` и `availableDays`, и новая заявка проверяется по `availableDays` (CLAUDE.md §5.1) | Нет, `days` совместим |
+| 2 | Остаток | Submitted не резервирует дни | `days` считается так же; дополнительно отдаются `pendingDays` и `availableDays`, и новая заявка проверяется по `availableDays` (PROJECT_SPEC.md §5.1) | Нет, `days` совместим |
 | 3 | `listAssigned` | `Page<CourseSummary>` | `Page<AssignedCourse>`, расширение `CourseSummary` | Нет |
 | 4 | `completeLesson(courseId, lessonId)` | два id | Путь только с `lessonId` | Нет, адаптер просто не передаёт `courseId` |
-| 5 | `AssistantAnswer` | `kind/text/message/escalation` | То же плюс поля CLAUDE.md | Нет |
+| 5 | `AssistantAnswer` | `kind/text/message/escalation` | То же плюс поля PROJECT_SPEC.md | Нет |
 | 6 | `Notification` | `title/message` | То же, уже переведено, плюс ключи i18n | Нет |
 | 7 | `LeaveRequestEvent.actorId` | `string` | `"system"` для системных событий | Нет |
-| 8 | Имена из CLAUDE.md | — | Взяты имена фронтенда: роли `Employee/Manager/HRAdmin` вместо `employee/manager/hr`, статусы `Submitted…` вместо `pending…`, поля `startDate/endDate` вместо `date_from/date_to` | Нет |
+| 8 | Имена из PROJECT_SPEC.md | — | Взяты имена фронтенда: роли `Employee/Manager/HRAdmin` вместо `employee/manager/hr`, статусы `Submitted…` вместо `pending…`, поля `startDate/endDate` вместо `date_from/date_to` | Нет |
 | 9 | `signOut` | метод сервиса | Эндпоинта нет: JWT без состояния | Нет |
 | 10 | Отказ по заявке | `LeaveDecision {decision, expectedVersion, comment}` | С гарантиями обязателен `reasonCode` из справочника, комментарий от 10 символов | **Да**: выбор причины в окне отказа. Временный обход — `GUARANTEES_REQUIRE_REASON=false` |
 | 11 | Карточка заявки | — | Поле `extensions` (`guarantee` и др.) | Нет; нужно только для бейджа «Ответ до …» |

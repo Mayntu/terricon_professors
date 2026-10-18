@@ -1,4 +1,4 @@
-"""«Обращение» (CLAUDE.md §7.6)."""
+"""«Обращение» (PROJECT_SPEC.md §7.6)."""
 
 
 async def submit(client, h, anonymous=True):

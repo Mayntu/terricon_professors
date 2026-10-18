@@ -1,4 +1,4 @@
-"""«Зарплата по факту» — доступ к заработанному (CLAUDE.md §7.3). Флаг: wage_access."""
+"""«Зарплата по факту» — доступ к заработанному (PROJECT_SPEC.md §7.3). Флаг: wage_access."""
 
 from typing import Any
 

@@ -7,7 +7,7 @@ from app.core.db import Base
 
 
 class KbGapGroup(Base):
-    """Группа похожих вопросов без ответа (CLAUDE.md §7.10). Без имён тех, кто спрашивал."""
+    """Группа похожих вопросов без ответа (PROJECT_SPEC.md §7.10). Без имён тех, кто спрашивал."""
 
     __tablename__ = "ext_kb_gap_groups"
 

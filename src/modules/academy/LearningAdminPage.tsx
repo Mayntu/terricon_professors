@@ -14,7 +14,7 @@ interface Row { employeeId: string; employeeName: string; unitId: string; course
 interface Person { id: string; displayName: string; position: string }
 const tone = { Assigned: 'neutral', InProgress: 'warning', Completed: 'success' } as const
 
-/** HR (/hr/learning) и руководитель: прогресс обучения и назначение курса (CLAUDE.md §5.4, §5.5). */
+/** HR (/hr/learning) и руководитель: прогресс обучения и назначение курса (PROJECT_SPEC.md §5.4, §5.5). */
 export default function LearningAdminPage() {
   const t = useT()
   const { user } = useDemoSession()

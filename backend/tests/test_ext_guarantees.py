@@ -1,4 +1,4 @@
-"""Гарантии и политики (CLAUDE.md §7.1)."""
+"""Гарантии и политики (PROJECT_SPEC.md §7.1)."""
 
 from datetime import timedelta
 

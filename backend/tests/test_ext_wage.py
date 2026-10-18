@@ -1,4 +1,4 @@
-"""«Зарплата по факту» (CLAUDE.md §7.3)."""
+"""«Зарплата по факту» (PROJECT_SPEC.md §7.3)."""
 
 from app.core import clock
 

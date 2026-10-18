@@ -2,7 +2,7 @@ import { appendFileSync } from 'node:fs'
 import { expect, test, type Page } from '@playwright/test'
 import { API, loginAs, resetDemo } from './helpers'
 
-/** Сквозной демо-сценарий CLAUDE.md §12 в собранном приложении: от входа Айгерим до 10,8 млн ₸. */
+/** Сквозной демо-сценарий PROJECT_SPEC.md §12 в собранном приложении: от входа Айгерим до 10,8 млн ₸. */
 test.setTimeout(180_000)
 
 async function ask(page: Page, q: string) {

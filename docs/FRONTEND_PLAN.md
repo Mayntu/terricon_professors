@@ -11,7 +11,7 @@
 | Роутер | `src/app/routes.ts` — каталог `plannedScreens` (путь, роли). `src/app/router.tsx` — `switch (screen.id)` в `DemoScreen` сопоставляет экран и компонент. Остальное показывается заглушкой `PlannedPage` |
 | Меню | `src/layouts/navigation.ts` — `getNavigation(role)`: группы «Личное», «Команда», «HR» |
 | UI-кит | Своих примитивов три: `components/ui/Button` (primary / secondary / quiet), `QueryState`, `WorkspaceHeading`. Плюс `components/motion/*` (SegmentedControl, AnimatedValue и др.). Остальное — классы в `styles/*.css` |
-| Стили | Токены в `styles/tokens.css`: `--jana-green`, `--surface-*`, `--text-*`, `--status-*`. Дизайн-система JANA FLOW описана в `docs/DESIGN_SYSTEM.md` и `AGENTS.md`: типографика, без «AI-дашбордов», оранжевый — редкий акцент |
+| Стили | Токены в `styles/tokens.css`: `--jana-green`, `--surface-*`, `--text-*`, `--status-*`. Дизайн-система JANA FLOW описана в `docs/DESIGN_SYSTEM.md` и `CONTRIBUTING.md`: типографика, без «AI-дашбордов», оранжевый — редкий акцент |
 | i18n | **Нет.** Тексты на русском прямо в компонентах |
 | Данные | `services/contracts.ts` — интерфейсы. `AppProviders` создаёт `createMockServices()` и кладёт в `ServicesContext`. Хук `useServiceQuery` подписан на ревизию мок-хранилища |
 | **Вход и токен** | **Моки.** Вход — выбор роли (Employee / Manager / HRAdmin) в `sessionStorage`, данные в `localStorage` (`jana.mock-state.v1`). **HTTP-клиента и токена нет**, `services/http/` пуст |

@@ -1,5 +1,5 @@
 {
-  "_comment": "Грейды и вилки (CLAUDE.md §11). Критерии на строке грейда — условия перехода на следующий. Вилки включает HR.",
+  "_comment": "Грейды и вилки (PROJECT_SPEC.md §11). Критерии на строке грейда — условия перехода на следующий. Вилки включает HR.",
   "rows": [
     {"code": "SORT-1", "country": "KZ", "band_min": 230000, "band_max": 270000, "next_grade_code": "SORT-2", "required_course_ids": ["course-returns", "course-safety"], "min_months_in_grade": 6, "min_months_no_incidents": 6},
     {"code": "SORT-2", "country": "KZ", "band_min": 275000, "band_max": 320000, "next_grade_code": "LEAD-1", "required_course_ids": [], "min_months_in_grade": 12, "min_months_no_incidents": 12},

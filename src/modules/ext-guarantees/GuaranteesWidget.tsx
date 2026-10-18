@@ -11,7 +11,7 @@ import './i18n'
 interface Summary { openRequests: { requestId: string; number: string; typeTitle: string; deadlineAt: string }[]; rejectionsWithoutReason: number; decidedOnTime: number; decidedTotal: number; nextSalaryReview: string | null }
 interface Shift { id: string; date: string; startTime: string; endTime: string }
 
-/** Блок «Мои гарантии» на главной (CLAUDE.md §7.1). */
+/** Блок «Мои гарантии» на главной (PROJECT_SPEC.md §7.1). */
 export default function GuaranteesWidget() {
   const t = useT()
   const s = useApi<Summary>('/ext/guarantees/summary/me')
