@@ -1,4 +1,4 @@
-"""База знаний AI Jana и журнал вопросов (CLAUDE.md §7.7)."""
+"""База знаний AI Jana и журнал вопросов (PROJECT_SPEC.md §7.7)."""
 
 from datetime import datetime
 

@@ -5,7 +5,7 @@ import { apiEnabled } from '@/services/http/client'
 import { featureEnabled } from './settings'
 import { translate } from './i18n'
 
-/** Места во фронтенде напарника, куда ext-модули вставляют свои блоки (CLAUDE.md §4.2). */
+/** Места во фронтенде напарника, куда ext-модули вставляют свои блоки (PROJECT_SPEC.md §4.2). */
 export type SlotName =
   | 'home.widgets'          // главная (DashboardPage)
   | 'profile.sections'      // профиль (ProfilePage)

@@ -1,4 +1,4 @@
-"""Jana Academy: каталог, назначенные курсы, уроки, тест, прогресс (CLAUDE.md §5.4)."""
+"""Jana Academy: каталог, назначенные курсы, уроки, тест, прогресс (PROJECT_SPEC.md §5.4)."""
 
 from app.core.modules import BackendModule
 from app.modules.academy.register import register

@@ -1,4 +1,4 @@
-"""Каркас и обязательная часть этапа 1: вход, профиль, отпуск, заявки, уведомления, HR (CLAUDE.md §5, §8)."""
+"""Каркас и обязательная часть этапа 1: вход, профиль, отпуск, заявки, уведомления, HR (PROJECT_SPEC.md §5, §8)."""
 
 from datetime import timedelta
 
@@ -87,7 +87,7 @@ async def test_employee_cannot_see_others(client, login):
 
 
 async def test_no_endpoints_to_change_official_data(app):
-    """Официальные поля только для чтения: кроме языка, профиль не меняется (CLAUDE.md §5.1)."""
+    """Официальные поля только для чтения: кроме языка, профиль не меняется (PROJECT_SPEC.md §5.1)."""
     paths = app.openapi()["paths"]
     assert "/api/profile/me" in paths and "/api/employees/{employee_id}" in paths  # проверка не пустая
     writes = {

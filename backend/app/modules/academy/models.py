@@ -1,4 +1,4 @@
-"""Jana Academy (CLAUDE.md §5.4). Курсы общие (country NULL) или для одной страны."""
+"""Jana Academy (PROJECT_SPEC.md §5.4). Курсы общие (country NULL) или для одной страны."""
 
 from datetime import date, datetime
 from typing import Any

@@ -3,7 +3,7 @@ import { useT } from '../ext-core/i18n'
 import { MIN_REJECT_COMMENT, useRejectReasonRequired } from './rejectRules'
 import './i18n'
 
-/** Выбор причины отказа для окна решения (CLAUDE.md §7.1). Без гарантий — ничего не рендерит. */
+/** Выбор причины отказа для окна решения (PROJECT_SPEC.md §7.1). Без гарантий — ничего не рендерит. */
 export function RejectReason({ type = 'vacation', value, onChange, disabled }: { type?: string; value: string; onChange: (code: string) => void; disabled?: boolean }) {
   const t = useT()
   const required = useRejectReasonRequired()

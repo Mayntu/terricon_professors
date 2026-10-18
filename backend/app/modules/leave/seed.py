@@ -1,4 +1,4 @@
-"""Заявки на отпуск в разных статусах (CLAUDE.md §11)."""
+"""Заявки на отпуск в разных статусах (PROJECT_SPEC.md §11)."""
 
 from datetime import timedelta
 

@@ -1,4 +1,4 @@
-"""«Вопрос к HR» — эскалация из AI Jana (CLAUDE.md §5.6). Простой тип заявки, согласующий — HR."""
+"""«Вопрос к HR» — эскалация из AI Jana (PROJECT_SPEC.md §5.6). Простой тип заявки, согласующий — HR."""
 
 from app.core.modules import BackendModule
 from app.modules.hr_question.register import register

@@ -1,4 +1,4 @@
-"""HR-пульт: радар удержания + счётчик сохранённых денег (CLAUDE.md §7.5). Флаг: hr_console."""
+"""HR-пульт: радар удержания + счётчик сохранённых денег (PROJECT_SPEC.md §7.5). Флаг: hr_console."""
 
 from app.core.modules import BackendModule, ModuleContext
 from app.modules.ext_hr_console.router import router

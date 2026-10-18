@@ -1,4 +1,4 @@
-"""AI Jana: ответы только по базе знаний страны пользователя, с источником (CLAUDE.md §7.7)."""
+"""AI Jana: ответы только по базе знаний страны пользователя, с источником (PROJECT_SPEC.md §7.7)."""
 
 from app.core.modules import BackendModule
 from app.modules.ai_jana.register import register

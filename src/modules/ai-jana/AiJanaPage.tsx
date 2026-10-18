@@ -13,7 +13,7 @@ interface Source { articleId: string; title: string; section: string; sectionId:
 interface Answer { kind: 'grounded' | 'no-answer'; text: string | null; message: string | null; sources: Source[]; escalateAvailable: boolean; reason: string | null }
 interface Turn { id: number; question: string; hrKey: string; answer?: Answer; error?: string; askedHr?: string; hrId?: string; hrBusy?: boolean; hrError?: string }
 
-/** Чат AI Jana (CLAUDE.md §7.7): ответ с источниками, честный отказ, «Спросить HR» при escalate_available. */
+/** Чат AI Jana (PROJECT_SPEC.md §7.7): ответ с источниками, честный отказ, «Спросить HR» при escalate_available. */
 export default function AiJanaPage() {
   const t = useT()
   const lang = useLang()

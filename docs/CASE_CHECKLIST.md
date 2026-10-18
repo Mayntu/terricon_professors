@@ -1,4 +1,4 @@
-# Чек-лист соответствия кейсу (CLAUDE.md §12.1)
+# Чек-лист соответствия кейсу (PROJECT_SPEC.md §12.1)
 
 Финальная проверка 17.10.2026 (`docs/FINAL_QA.md`): каждый пункт закрыт на бэкенде (pytest, `scripts/smoke_api.py`, `scripts/demo_check.py`)
 **и пройден через интерфейс** — `e2e-ext/20-case-checklist.spec.ts`, скриншоты шагов в `docs/screenshots/case/`.

@@ -8,7 +8,7 @@ registerDictionary(
   { 'doc.leave_order': 'Демалыс туралы № {number} бұйрық Documentolog-та модельденді (mock)', 'doc.wage_advance': 'Аванс туралы № {number} өтініш Documentolog-та модельденді (mock)', 'doc.other': '№ {number} құжат Documentolog-та модельденді (mock)' },
 )
 
-/** Карточка заявки: документ, сформированный в mock Documentolog после одобрения (CLAUDE.md §5.2). */
+/** Карточка заявки: документ, сформированный в mock Documentolog после одобрения (PROJECT_SPEC.md §5.2). */
 export default function DocumentBadge({ requestId }: { requestId?: string }) {
   const t = useT()
   const ext = useRequestExt(requestId)

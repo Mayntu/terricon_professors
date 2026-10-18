@@ -1,4 +1,4 @@
-"""Биржа смен, мини (CLAUDE.md §7.8)."""
+"""Биржа смен, мини (PROJECT_SPEC.md §7.8)."""
 
 from datetime import timedelta
 

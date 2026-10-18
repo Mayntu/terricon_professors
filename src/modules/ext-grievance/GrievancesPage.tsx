@@ -11,7 +11,7 @@ import './i18n'
 
 const tone = (s: string) => (s === 'Approved' ? 'success' : s === 'Rejected' ? 'danger' : 'warning') as 'success' | 'danger' | 'warning'
 
-/** Подача обращения и «Мои обращения» (CLAUDE.md §7.6). */
+/** Подача обращения и «Мои обращения» (PROJECT_SPEC.md §7.6). */
 export default function GrievancesPage() {
   const t = useT()
   const mine = useApi<{ items: RequestOut[] }>('/requests/my?type=grievance')

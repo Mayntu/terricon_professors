@@ -26,7 +26,7 @@ uv run uvicorn app.main:app --reload
 cd backend
 uv run pytest -q                     # backend-тесты (SQLite в памяти)
 uv run python scripts/smoke_api.py   # 109 сквозных проверок живого API на Postgres (роли, права, гонки)
-uv run python scripts/demo_check.py  # демо-сценарий CLAUDE.md §12 по шагам
+uv run python scripts/demo_check.py  # демо-сценарий PROJECT_SPEC.md §12 по шагам
 ```
 
 Оба скрипта делают `POST /api/demo/reset`, то есть стирают демо-данные.
@@ -48,7 +48,7 @@ uv run python scripts/demo_check.py  # демо-сценарий CLAUDE.md §12 
 
 Демо-вход без пароля: `POST /api/demo/login-as {role}` или `{login}`. Перевод часов: `POST /api/demo/advance-time {hours}`.
 
-## Демо-сценарий (CLAUDE.md §12)
+## Демо-сценарий (PROJECT_SPEC.md §12)
 
 1. **Айгерим** входит. На главной видно «Мои гарантии», «Доступно 84 000 ₸», «Ответ по отпуску до …». В профиле: «Лестница: осталось 1 курс, +35 000 ₸».
 2. «Зарплата по факту» на 60 000 ₸: система создаёт демонстрационную заявку, mock-документ Documentolog и тестовую банковскую запись; приходит уведомление. Реального перевода денег нет.

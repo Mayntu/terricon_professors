@@ -143,7 +143,8 @@ src/
   main.tsx
 public/
   favicon.svg
-AGENTS.md             # Постоянные правила разработки
+CONTRIBUTING.md        # Правила разработки
+PROJECT_SPEC.md        # Требования и сценарии
 playwright.config.ts  # Локальный браузерный прогон
 tests/                # Вход/оболочка, сквозной leave flow, бизнес-инварианты сервисов
 ```
@@ -185,8 +186,9 @@ Chromium через `npx playwright install chromium`, затем задать
 `PLAYWRIGHT_CHANNEL=chromium` перед `npm run test:e2e` (в PowerShell:
 `$env:PLAYWRIGHT_CHANNEL='chromium'`). Тесты не используют пользовательский профиль браузера.
 
-Перед следующими задачами читать [AGENTS.md](../AGENTS.md),
-[дизайн-систему](DESIGN_SYSTEM.md) и [карту экранов](SCREEN_MAP.md).
+Правила разработки описаны в [CONTRIBUTING.md](../CONTRIBUTING.md), требования —
+в [спецификации проекта](../PROJECT_SPEC.md). Дополнительно: [дизайн-система](DESIGN_SYSTEM.md)
+и [карта экранов](SCREEN_MAP.md).
 Основания: [Vite](https://vite.dev/guide/),
 [Tailwind CSS](https://tailwindcss.com/docs/installation/using-vite),
 [React Router](https://reactrouter.com/start/declarative/routing),

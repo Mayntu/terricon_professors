@@ -8,7 +8,7 @@ from app.core.db import Base
 
 
 class Shift(Base):
-    """Смена в центре (CLAUDE.md §7.8). center_id — корневое подразделение (сортировочный центр/склад)."""
+    """Смена в центре (PROJECT_SPEC.md §7.8). center_id — корневое подразделение (сортировочный центр/склад)."""
 
     __tablename__ = "ext_shifts"
 

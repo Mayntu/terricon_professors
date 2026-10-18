@@ -11,7 +11,7 @@ class PersonRef(ApiModel):
 
 
 class EmployeeProfile(ApiModel):
-    """Совпадает с EmployeeProfile фронтенда + расширения (CLAUDE.md §5.1)."""
+    """Совпадает с EmployeeProfile фронтенда + расширения (PROJECT_SPEC.md §5.1)."""
 
     id: str
     display_name: str

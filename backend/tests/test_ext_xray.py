@@ -1,4 +1,4 @@
-"""Рентген руководителей (CLAUDE.md §7.9)."""
+"""Рентген руководителей (PROJECT_SPEC.md §7.9)."""
 
 
 async def test_hr_sees_all_erlan_on_top(client, login):
