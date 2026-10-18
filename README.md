@@ -40,7 +40,7 @@ Jana Post за три года выросла до ~35% кросс-бордер�
 Нужен **Docker** с Compose 2.24+ (Docker Desktop, OrbStack или Docker Engine). Больше ничего: ни Node, ни Python, ни `.env`.
 
 ```sh
-git clone https://github.com/professorbond/terricon_professors.git
+git clone https://github.com/Mayntu/terricon_professors.git
 cd terricon_professors
 docker compose up
 ```

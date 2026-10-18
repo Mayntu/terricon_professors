@@ -16,7 +16,7 @@
 
 ## Файлы на сервере
 
-- код: `~/projects/janamen` (клон репозитория, ветка `feature`);
+- код: `~/projects/janamen` (клон https://github.com/Mayntu/terricon_professors, ветка `feature`);
 - `~/projects/janamen/.env` (права 600, в git нет): `PUBLIC_HOST`, `JWT_SECRET`, `POSTGRES_PASSWORD`, `DEMO_MODE`, `ANTHROPIC_API_KEY`.
 
 ## Обновить версию
